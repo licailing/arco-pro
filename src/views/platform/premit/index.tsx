@@ -80,7 +80,7 @@ export default defineComponent({
     const handleGenerate = async () => {
       const hide = Message.loading('正在生成平台权限');
       try {
-        const { success } = await axios.get('/api/premit/generate');
+        const { success }: any = await axios.get('/api/premit/generate');
         hide.close();
         if (!success) {
           return false;
@@ -98,7 +98,7 @@ export default defineComponent({
         {
           action: 1,
           name: '生成平台权限',
-          handleClick: async ({ action }) => {
+          handleClick: async ({ action }: any) => {
             const ok = await handleGenerate();
             if (ok) {
               action.reload();

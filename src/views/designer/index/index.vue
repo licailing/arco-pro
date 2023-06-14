@@ -81,11 +81,12 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, provide, onMounted } from 'vue';
+  import { ref, reactive, provide, onMounted, Ref } from 'vue';
   import { VueDraggableNext } from 'vue-draggable-next';
   import axios from 'axios';
   import { Message } from '@arco-design/web-vue';
   import { setObject } from '@/utils/storage';
+  import { HttpResponse } from '@/api/interceptor';
   import Shape from '../components/shapes/shape.vue';
   import Field from '../components/fields/field.vue';
   import { settings } from './designerSettings';
@@ -96,16 +97,16 @@
   const fieldFormRef = ref();
   const shapeFormModel = ref({});
   const shapeFormRef = ref();
-  const list = ref([]);
+  const list = ref<any[]>([]);
   const fieldSettingCurrent = ref('field');
   const currentField = ref<any>(undefined);
   const formSetting = ref<FormSetting>({
     labelPosition: 'top',
     rowCol: 3,
-  });
+  }) as Ref;
   const initData = async () => {
     try {
-      const res = await axios.get('/api/designer/detail');
+      const res: HttpResponse<any[]> = await axios.get('/api/designer/detail');
       let data = [];
       if (res.success) {
         data = res.data || [];
@@ -123,7 +124,7 @@
   const handleReview = () => {
     review.value = true;
   };
-  const setCurrentField = (field: object) => {
+  const setCurrentField = (field: any) => {
     currentField.value = field;
   };
   provide(

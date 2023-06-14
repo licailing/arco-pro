@@ -2,8 +2,8 @@ import type { InjectionKey, Ref, Slots } from 'vue';
 
 export interface DesignContext {
   currentField: any;
-  setCurrentField: (field: object) => void;
-  formSetting: FormSetting;
+  setCurrentField: (field: any) => void;
+  formSetting: Ref<FormSetting>;
   fieldFormModel: any;
 }
 export interface FormSetting {

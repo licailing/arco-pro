@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref, nextTick, inject, watch, computed } from 'vue';
+  import { nextTick, inject, watch, computed, Ref } from 'vue';
   import { VueDraggableNext } from 'vue-draggable-next';
   import { usePureProp } from '@arco-design/web-vue/es/_hooks/use-pure-prop';
   import ShapeBase from './base.vue';
@@ -57,18 +57,18 @@
 
   const getComponent = (type: any) => {
     // 外形有长一样的
-    const shapeSettings = {
+    const shapeSettings: any = {
       popUpTable: ShapeChooseInput,
       multiAdd: ShapeMultiAdd,
     };
     return shapeSettings[type] || ShapeBase;
   };
   const designCtx = inject<Partial<DesignContext>>(designInjectionKey, {});
-  const data = usePureProp(props, 'list');
+  const data = usePureProp(props, 'list') as Ref<any[]>;
   const emit = defineEmits({
     'update:list': (val) => true,
   });
-  const update = (val) => {
+  const update = (val: any[]) => {
     if (!val || !val.length) {
       data.value = val;
       return true;
@@ -99,7 +99,9 @@
   );
   const activeKey = computed(() => designCtx?.currentField?.key);
   const handleClick = (index: number) => {
-    designCtx?.setCurrentField?.(data.value[index]);
+    if (Array.isArray(data.value) && data.value.length) {
+      designCtx?.setCurrentField?.(data.value[index] as object);
+    }
   };
   const handleRemove = (index: number) => {
     if (!Array.isArray(data.value) || !data.value.length) {
@@ -109,7 +111,7 @@
     // 删除
     nextTick(() => {
       if (data.value.length === 0) {
-        designCtx?.setCurrentField?.(null);
+        designCtx?.setCurrentField?.(undefined);
         return;
       }
       let current = index;
@@ -119,14 +121,13 @@
       designCtx?.setCurrentField?.(data.value[current]);
     });
   };
-  const handleAdd = (e) => {
+  const handleAdd = (e: any) => {
     const { newIndex } = e;
     nextTick(() => {
       designCtx?.setCurrentField?.(data.value[newIndex]);
     });
   };
-  const handleChange = (item, index) => {
-    console.log('handleChange', data, index);
+  const handleChange = (item: any, index: number) => {
     data.value.splice(index, 1, item);
   };
 </script>

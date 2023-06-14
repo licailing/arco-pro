@@ -4,50 +4,63 @@ import qs from 'query-string';
 import setupMock, { successResponseWrap } from '@/utils/setup-mock';
 import sysPremits from './sysPremits';
 
+interface PermitItem {
+  moduleName: string;
+  moduleDesc: string;
+  moduleType: string;
+  actions: {
+    [propName: string]: any;
+  };
+}
+
 let premits: any[] = [];
 let i = 1;
-sysPremits.forEach(({ moduleName, moduleDesc, moduleType, actions }) => {
-  Object.keys(actions).forEach((act) => {
-    premits.push({
-      premitId: `${i}`,
-      premitModule: moduleName,
-      premitModuleDesc: moduleDesc,
-      premitAction: act,
-      premitActionDesc: actions[act] as string,
-      premitType: moduleType,
-    });
-    i += 1;
-  });
-});
-
-function generatePremit() {
-  sysPremits.forEach(({ moduleName, moduleDesc, moduleType, actions }) => {
-    Object.keys(actions).forEach((act) => {
-      let index = -1;
-      for (const [key, premit] of premits.entries()) {
-        if (premit.premitAction === act) {
-          index = key;
-          break;
-        }
-      }
-      const item = {
-        premitId: '',
+sysPremits.forEach(
+  ({ moduleName, moduleDesc, moduleType, actions }: PermitItem) => {
+    Object.keys(actions).forEach((act: any) => {
+      premits.push({
+        premitId: `${i}`,
         premitModule: moduleName,
         premitModuleDesc: moduleDesc,
         premitAction: act,
         premitActionDesc: actions[act] as string,
         premitType: moduleType,
-      };
-      if (index !== -1) {
-        item.premitId = premits[index].premitId;
-        premits.splice(index, 1, item);
-      } else {
-        item.premitId = `${i}`;
-        premits.push(item);
-        i += 1;
-      }
+      });
+      i += 1;
     });
-  });
+  }
+);
+
+function generatePremit() {
+  sysPremits.forEach(
+    ({ moduleName, moduleDesc, moduleType, actions }: PermitItem) => {
+      Object.keys(actions).forEach((act) => {
+        let index = -1;
+        for (const [key, premit] of premits.entries()) {
+          if (premit.premitAction === act) {
+            index = key;
+            break;
+          }
+        }
+        const item = {
+          premitId: '',
+          premitModule: moduleName,
+          premitModuleDesc: moduleDesc,
+          premitAction: act,
+          premitActionDesc: actions[act] as string,
+          premitType: moduleType,
+        };
+        if (index !== -1) {
+          item.premitId = premits[index].premitId;
+          premits.splice(index, 1, item);
+        } else {
+          item.premitId = `${i}`;
+          premits.push(item);
+          i += 1;
+        }
+      });
+    }
+  );
   return successResponseWrap('ok');
 }
 
@@ -59,7 +72,7 @@ function getPremit(options: GetParams) {
 
   if (params.sorter) {
     const s = params.sorter.split('.');
-    dataSource = dataSource.sort((prev, next) => {
+    dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
       }
@@ -103,14 +116,14 @@ function getPremit(options: GetParams) {
 }
 
 function updatePremit(options: GetParams) {
-  const body = JSON.parse(options.body) || {};
+  const body = options.body ? JSON.parse(options.body) || {} : {};
   const {
     premitId,
     premitAction,
     premitModule,
     premitActionDesc,
     premitModuleDesc,
-  } = body;
+  } = body || {};
 
   if (premitId) {
     premits = premits.map((item) => {
@@ -158,7 +171,7 @@ function getMenu() {
       });
     }
   );
-  const menuData = [];
+  const menuData: any[] = [];
   Object.keys(options).forEach((opt) => {
     let title = opt;
     switch (opt) {
@@ -171,7 +184,7 @@ function getMenu() {
       default:
         break;
     }
-    const optionChildren = [];
+    const optionChildren: any[] = [];
     Object.keys(options[opt]).forEach((optC) => {
       optionChildren.push(options[opt][optC]);
     });

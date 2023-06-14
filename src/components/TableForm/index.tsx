@@ -21,6 +21,13 @@ export interface RenderData {
   column: any;
   rowIndex: number;
 }
+
+export interface ButtonData {
+  type: 'column' | 'toolbar';
+  data?: ToolBarData<any>;
+  record?: any;
+}
+
 export interface ModalFormData {
   isAdd: boolean;
   rowData: any;
@@ -33,17 +40,23 @@ export interface ButtonItem {
   // action: 1 toolbar ,2 操作按钮, 3 即时操作按钮也是toolbar按钮如删除
   action: number;
   path: string | ((record: any) => string);
-  name: string | ((record: any) => string);
+  // type: column 列表操作, toolbar: 工具栏
+  name: string | ((data: ButtonData) => string);
   alias: string;
   handleClick: ({
     record,
     action,
+    data,
+    type,
   }: {
-    record: any;
-    action: UseFetchDataAction;
+    record?: any;
+    action?: UseFetchDataAction;
+    data?: ToolBarData<any>;
+    type: 'column' | 'toolbar';
   }) => any;
   getCustomConfirm: (record: any) => any;
-  checkShow: (record: any) => boolean;
+  // 按钮是否显示
+  show: (data: ButtonData) => boolean;
 }
 
 const renderColumnButton = ({
@@ -65,17 +78,19 @@ const renderColumnButton = ({
   handleRemove: (key: (string | number)[], confirmInfo: any) => void;
   simple: boolean;
 }) => {
+  const buttonData: ButtonData = { type: 'column', record };
   // 判断按钮是否显示
-  if (typeof button.checkShow === 'function' && !button.checkShow(record)) {
+  if (typeof button.show === 'function' && !button.show(buttonData)) {
     return null;
   }
   const name =
-    typeof button.name === 'function' ? button.name(record) : button.name;
+    typeof button.name === 'function' ? button.name(buttonData) : button.name;
   // 自定义点击事件
   if (typeof button.handleClick === 'function') {
     const data: any = {
       record,
       action,
+      type: 'column',
     };
     return (
       <a-button
@@ -204,13 +219,13 @@ export default defineComponent({
     const isAdd = ref(false);
     const updatePath = ref('');
     const { eventHandlers } = useFormItem();
-    const _value = ref(props.defaultValue);
+    const _value = ref<any[]>(props.defaultValue || []);
 
     const computedValue = computed(() => props.modelValue ?? _value.value);
-    const handleChange = (value: any, e: Event) => {
+    const handleChange = (value: any, e: Event | undefined) => {
       _value.value = value;
       emit('update:modelValue', value);
-      emit('change', value, e);
+      emit('change', value, (e || {}) as Event);
       eventHandlers.value?.onChange?.(e);
     };
 
@@ -247,7 +262,7 @@ export default defineComponent({
 
     watch(modelValue, (val) => {
       if (isUndefined(val) || isNull(val)) {
-        _value.value = '';
+        _value.value = [];
       }
     });
 
@@ -316,8 +331,15 @@ export default defineComponent({
       button: ButtonItem,
       data: ToolBarData<any>
     ) => {
+      const buttonData: ButtonData = { type: 'toolbar', data };
+      // 判断按钮是否显示
+      if (typeof button.show === 'function' && !button.show(buttonData)) {
+        return null;
+      }
       const name =
-        typeof button.name === 'function' ? button.name(data) : button.name;
+        typeof button.name === 'function'
+          ? button.name(buttonData)
+          : button.name;
       // 自定义点击事件
       if (typeof button.handleClick === 'function') {
         return (
@@ -327,7 +349,7 @@ export default defineComponent({
             onClick={(e: Event) => {
               e.stopPropagation();
               e.preventDefault();
-              button.handleClick(data);
+              button.handleClick({ data, type: 'toolbar' });
             }}
           >
             {name}

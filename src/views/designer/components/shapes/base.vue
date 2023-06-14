@@ -46,7 +46,7 @@
     active: Boolean,
     options: {
       type: Object,
-      required: true,
+      default: () => {},
     },
     placeholder: {
       type: String,
@@ -58,10 +58,6 @@
       default: true,
     },
     name: String,
-    showTitle: {
-      type: Boolean,
-      default: true,
-    },
   });
 </script>
 <script lang="ts">

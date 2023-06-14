@@ -4,6 +4,17 @@ import setupMock, { successResponseWrap } from '@/utils/setup-mock';
 import { GetParams } from '@/types/global';
 import dayjs from 'dayjs';
 
+interface ListItem {
+  id: number;
+  number: string;
+  name: string;
+  contentType: string;
+  count: string;
+  status: number;
+  filterType: string;
+  createdTime: string;
+}
+
 const { Random } = Mock;
 let i = 156;
 const policys = Mock.mock({
@@ -28,11 +39,11 @@ function getPolicy(options: GetParams) {
   const p = (params.current as number) || 1;
   const ps = (params.pageSize as number) || 20;
 
-  let dataSource = policys.list;
+  let dataSource: ListItem[] = policys.list;
 
   if (params.sorter) {
     const s = params.sorter.split('.');
-    dataSource = dataSource.sort((prev, next) => {
+    dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
       }
@@ -93,12 +104,12 @@ function getPolicy(options: GetParams) {
 }
 
 function updatePolicy(options: GetParams) {
-  const body = JSON.parse(options.body) || {};
-  const { id } = body;
+  const body = options.body ? JSON.parse(options.body) || {} : {};
+  const { id } = body as ListItem;
 
   if (id) {
     // 编辑
-    policys.list = policys.list.map((item) => {
+    policys.list = policys.list.map((item: ListItem) => {
       if (item.id === id) {
         return {
           ...item,
@@ -125,7 +136,9 @@ function deletePolicy(options: GetParams) {
     return successResponseWrap('ok');
   }
   const ids = params.ids.split(',');
-  policys.list = policys.list.filter((item) => !ids.includes(`${item.id}`));
+  policys.list = policys.list.filter(
+    (item: ListItem) => !ids.includes(`${item.id}`)
+  );
   return successResponseWrap('ok');
 }
 

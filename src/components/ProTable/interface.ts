@@ -52,6 +52,9 @@ export type ProColumnsValueType =
   | 'radioGroup'
   | 'switch'
   | 'hidden'
+  | 'progress'
+  | 'code'
+  | 'avatar'
   | 'uploadFile';
 
 /**
@@ -61,6 +64,11 @@ export type ProColumnsValueTypeFunction<T> = (
   item: T
 ) => ProColumnsValueType | ProColumnsValueObjectType;
 
+export interface RenderFormItemData {
+  item: ProColumns;
+  formModel: Ref;
+  formRef: Ref;
+}
 // function return type
 export type ProColumnsValueObjectType = {
   type: 'progress' | 'money' | 'percent';
@@ -94,10 +102,11 @@ export type ValueEnumMap = Map<
   | VNodeChild
 >;
 export interface ProColumns
-  extends Omit<TableColumnData, 'dataIndex' | 'title' | 'render'> {
+  extends Omit<TableColumnData, 'dataIndex' | 'title' | 'render' | 'children'> {
   dataIndex: string;
   order?: number;
   key?: string;
+  children?: ProColumns[];
   title?: string | ((item: ProColumns, type: ProTableTypes) => VNodeChild);
   /**
    * a-form-item 搜索表单的 props
@@ -119,7 +128,7 @@ export interface ProColumns
    * 值的类型
    */
   valueType?: ProColumnsValueType | ProColumnsValueTypeFunction<any>;
-  renderFormItem?: (data: { item: ProColumns }) => VNodeTypes | 'hidden';
+  renderFormItem?: (data: RenderFormItemData) => VNodeTypes | 'hidden';
   hideInSearch?: boolean;
   hideInTable?: boolean;
   hideInForm?: boolean;

@@ -214,11 +214,12 @@
   import axios from 'axios';
   import { Message } from '@arco-design/web-vue';
   import TableList from '@/components/TableList';
+  import { HttpResponse } from '@/api/interceptor';
 
   const handleGenerate = async () => {
     const hide = Message.loading('正在生成平台权限');
     try {
-      const { success } = await axios.get('/api/premit/generate');
+      const { success }: HttpResponse = await axios.get('/api/premit/generate');
       hide.close();
       if (!success) {
         return false;
@@ -235,7 +236,7 @@
     {
       action: 1,
       name: '生成平台权限',
-      handleClick: async ({ action }) => {
+      handleClick: async ({ action }: any) => {
         const ok = await handleGenerate();
         if (ok) {
           action.reload();
@@ -256,8 +257,8 @@
     },
   ];
   const formSearchRef = ref();
-  const formSearch = ref({});
-  const formModel = ref({});
+  const formSearch = ref<any>({});
+  const formModel = ref<any>({});
   const collapsed = ref(true);
   const tableRef = ref();
 </script>

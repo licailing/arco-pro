@@ -2,13 +2,14 @@ import TableList from '@/components/TableList';
 import { Ref, defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
+import { RenderFormItemData } from '@/components/ProTable/interface';
 
 export default defineComponent({
   name: 'Role',
-  setup(props, ctx) {
-    const premits = ref([]);
+  setup() {
+    const premits = ref<any[]>([]);
     onMounted(() => {
-      axios.get('/api/premit/menu').then((res) => {
+      axios.get('/api/premit/menu').then((res: any) => {
         if (res.success) {
           premits.value = res.data;
         }
@@ -43,7 +44,7 @@ export default defineComponent({
         dataIndex: 'premits',
         hideInSearch: true,
         hideInTable: true,
-        renderFormItem: ({ item, formModel, formRef }) => {
+        renderFormItem: ({ formModel, formRef }: RenderFormItemData) => {
           const { roleId } = formModel.value;
           if (roleId === '1') {
             return <span>全部</span>;

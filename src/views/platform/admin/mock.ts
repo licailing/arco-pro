@@ -4,8 +4,19 @@ import qs from 'query-string';
 import setupMock, { successResponseWrap } from '@/utils/setup-mock';
 import { GetParams } from '@/types/global';
 
+interface AdminItem {
+  uid: string;
+  realname: string;
+  username: string;
+  roleId: string;
+  roleName: string;
+  status: number;
+  password: string;
+  repassword: string;
+}
+
 let i = 3;
-let admins = [
+let admins: AdminItem[] = [
   {
     uid: '2',
     username: 'user',
@@ -36,8 +47,8 @@ function getAdmin(options: GetParams) {
   let dataSource = admins;
 
   if (params.sorter) {
-    const s = params.sorter.split('.');
-    dataSource = dataSource.sort((prev, next) => {
+    const s: string[] = params.sorter.split('.');
+    dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
       }
@@ -88,7 +99,8 @@ function getAdmin(options: GetParams) {
 function updateAdmin(options: GetParams) {
   let { body } = options;
   body = body ? JSON.parse(body) || {} : {};
-  const { uid, realname, username, roleId, roleName, status } = body;
+  const { uid, realname, username, roleId, roleName, status } = (body ||
+    {}) as AdminItem;
 
   if (uid) {
     // 编辑

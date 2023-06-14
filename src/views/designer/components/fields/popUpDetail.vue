@@ -60,7 +60,7 @@
   );
 
   const options = computed(() => {
-    return props.list.filter((item) => item.key !== props.field?.key);
+    return props.list.filter((item: any) => item.key !== props.field?.key);
   });
   const columns = ref([
     {

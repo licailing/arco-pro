@@ -81,7 +81,7 @@
   const formRowCol = computed(
     () => (designCtx?.formSetting?.value?.rowCol || 3) - 1
   );
-  const fieldSettings = {
+  const fieldSettings: any = {
     popUpTable: FieldPopUpTable,
     amountInput: AmountInput,
     popUpDetail: FieldPopUpDetail,

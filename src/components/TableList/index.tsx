@@ -10,6 +10,7 @@ import {
 import qs from 'query-string';
 import axios from 'axios';
 import { TableData } from '@arco-design/web-vue';
+import { HttpResponse } from '@/api/interceptor';
 import ProTable from '../ProTable';
 import { ActionType, ToolBarData } from '../ProTable/interface';
 import { handleForbidden, handleRemove, handleUpdate } from './util';
@@ -49,9 +50,13 @@ export interface ButtonItem {
   handleClick: ({
     record,
     action,
+    data,
+    type,
   }: {
-    record: any;
-    action: UseFetchDataAction;
+    record?: any;
+    action?: UseFetchDataAction;
+    data?: ToolBarData<any>;
+    type: 'column' | 'toolbar';
   }) => any;
   getCustomConfirm: (record: any) => any;
 }
@@ -83,6 +88,7 @@ const renderColumnButton = ({
     const data: any = {
       record,
       action,
+      type: 'column',
     };
     return (
       <a-button
@@ -305,7 +311,7 @@ export default defineComponent({
             onClick={(e: Event) => {
               e.stopPropagation();
               e.preventDefault();
-              button.handleClick(data);
+              button.handleClick({ data, type: 'toolbar' });
             }}
           >
             {name}
@@ -421,7 +427,7 @@ export default defineComponent({
       if (!props.url) {
         return false;
       }
-      const { success, data } = await axios.get(props.url, {
+      const { success, data }: HttpResponse<any> = await axios.get(props.url, {
         params,
         paramsSerializer: (obj) => {
           return qs.stringify(obj, {

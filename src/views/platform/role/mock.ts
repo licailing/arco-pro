@@ -3,6 +3,12 @@ import qs from 'query-string';
 import setupMock, { successResponseWrap } from '@/utils/setup-mock';
 import { GetParams } from '@/types/global';
 
+interface RoleItem {
+  roleId: string;
+  roleName: string;
+  premits: any[];
+}
+
 let i = 3;
 let role = [
   {
@@ -18,7 +24,7 @@ let role = [
 ];
 
 function getRoleAll() {
-  const list = [];
+  const list: any[] = [];
   if (role.length) {
     role.forEach((v) => {
       list.push({ roleId: v.roleId, roleName: v.roleName });
@@ -34,8 +40,8 @@ function getRole(options: GetParams) {
   let dataSource = role;
 
   if (params.sorter) {
-    const s = params.sorter.split('.');
-    dataSource = dataSource.sort((prev, next) => {
+    const s: string[] = params.sorter.split('.');
+    dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
       }
@@ -59,7 +65,7 @@ function getRole(options: GetParams) {
 function updateRole(options: GetParams) {
   let { body } = options || {};
   body = body ? JSON.parse(body) || {} : {};
-  const { roleId, roleName, premits } = body || {};
+  const { roleId, roleName, premits } = body || ({} as RoleItem);
 
   if (roleId) {
     role = role.map((item) => {

@@ -241,12 +241,9 @@ export default defineComponent({
         <div class={`${prefixCls}-container`}>
           {searchConfig.value.search ? (
             <a-input-search
-              searchButton
               placeholder={t('lightFormSearch:inputPlaceholder')}
               buttonText={t('lightFormSearch:enterButton')}
               style={{ 'width': '420px', 'margin-right': '8px' }}
-              allowClear
-              {...searchConfig.value.search}
               onChange={(value: string) => {
                 searchText.value = value;
               }}
@@ -254,6 +251,11 @@ export default defineComponent({
               onSearch={(keyword: string) => {
                 emit('search', { [searchConfig.value.name]: keyword });
               }}
+              {...(typeof searchConfig.value.search === 'object'
+                ? searchConfig.value.search || {}
+                : {})}
+              searchButton
+              allowClear
             />
           ) : null}
           <div class={`${prefixCls}-right`}>

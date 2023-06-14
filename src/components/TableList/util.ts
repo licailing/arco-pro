@@ -1,5 +1,6 @@
 import { Modal, Message } from '@arco-design/web-vue';
 import axios from 'axios';
+import { HttpResponse } from '@/api/interceptor';
 import { ActionType } from '../ProTable/interface';
 
 /**
@@ -26,7 +27,7 @@ export const handleRemove = (
     async onOk() {
       const hide = Message.loading('正在删除');
       try {
-        const { success = false } = await axios.get(path, {
+        const { success = false }: HttpResponse = await axios.get(path, {
           params: {
             ids: keys.join(','),
           },
@@ -67,7 +68,7 @@ export const handleForbidden = (
     messageType: record.status === 0 ? 'primary' : 'warning',
     cancelText: '取消',
     async onOk() {
-      const response = await axios.get(path, {
+      const response: HttpResponse = await axios.get(path, {
         params: data,
       });
       if (response.success) {
@@ -98,7 +99,7 @@ export const handleUpdate = async (
   const type = addFlag ? '添加' : '修改';
   const hide = Message.loading(`正在${type}`);
   try {
-    const { success = false } = await axios.post(path, fields);
+    const { success = false }: HttpResponse = await axios.post(path, fields);
     hide.close();
     if (success) {
       Message.success(`${type}成功`);

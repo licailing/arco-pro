@@ -1,53 +1,10 @@
 import type { VNodeChild } from 'vue';
 import dayjs from 'dayjs';
-import type { ColumnEmptyText } from './interface';
-
-/**
- * 数字框
- * digit 数字
- * decimal 小数
- * percent 百分比
- * money 金额
- * option 操作 需要返回一个数组
- * date 日期 YYYY-MM-DD
- * dateRange 日期范围 YYYY-MM-DD[]
- * dateTime 日期和时间 YYYY-MM-DD HH:mm:ss
- * dateTimeRange 范围日期和时间 YYYY-MM-DD HH:mm:ss[]
- * time: 时间 HH:mm:ss
- * index：序列
- * progress: 进度条
- */
-export type ProColumnsValueType =
-  | 'digit'
-  | 'decimal'
-  | 'percent'
-  | 'money'
-  | 'textarea'
-  | 'option'
-  | 'select'
-  | 'autoListView'
-  | 'date'
-  | 'dateRange'
-  | 'dateTimeRange'
-  | 'dateTime'
-  | 'time'
-  | 'text'
-  | 'progress'
-  | 'avatar'
-  | 'code'
-  | 'checkbox'
-  | 'switch'
-  | 'hidden';
-
-// function return type
-export type ProColumnsValueObjectType = {
-  type: 'progress' | 'money' | 'percent';
-  status?: 'normal' | 'active' | 'success' | 'exception' | undefined;
-  locale?: string;
-  /** percent */
-  showSymbol?: boolean;
-  precision?: number;
-};
+import type {
+  ColumnEmptyText,
+  ProColumnsValueType,
+  ProColumnsValueObjectType,
+} from './interface';
 
 /**
  * value type by function
@@ -164,67 +121,69 @@ const defaultRenderText = <T, U>(
     return moneyIntl.format(text as number);
   }
 
-  /**
-   *如果是日期的值
-   */
-  if (valueType === 'date' && text) {
-    return dayjs(text).format('YYYY-MM-DD');
-  }
+  if (typeof text === 'string' || typeof text === 'number') {
+    /**
+     *如果是日期的值
+     */
+    if (valueType === 'date' && text) {
+      return dayjs(text).format('YYYY-MM-DD');
+    }
 
-  /**
-   *如果是日期范围的值
-   */
-  if (
-    valueType === 'dateRange' &&
-    text &&
-    Array.isArray(text) &&
-    text.length === 2
-  ) {
-    // 值不存在的时候显示 "-"
-    const [startText, endText] = text;
-    return (
-      <div>
-        <div>{startText ? dayjs(startText).format('YYYY-MM-DD') : '-'}</div>
-        <div>{endText ? dayjs(endText).format('YYYY-MM-DD') : '-'}</div>
-      </div>
-    );
-  }
-
-  /**
-   *如果是日期加时间类型的值
-   */
-  if (valueType === 'dateTime' && text) {
-    return dayjs(text).format('YYYY-MM-DD HH:mm:ss');
-  }
-
-  /**
-   *如果是日期加时间类型的值的值
-   */
-  if (
-    valueType === 'dateTimeRange' &&
-    text &&
-    Array.isArray(text) &&
-    text.length === 2
-  ) {
-    // 值不存在的时候显示 "-"
-    const [startText, endText] = text;
-    return (
-      <div>
+    /**
+     *如果是日期范围的值
+     */
+    if (
+      valueType === 'dateRange' &&
+      text &&
+      Array.isArray(text) &&
+      text.length === 2
+    ) {
+      // 值不存在的时候显示 "-"
+      const [startText, endText] = text;
+      return (
         <div>
-          {startText ? dayjs(startText).format('YYYY-MM-DD HH:mm:ss') : '-'}
+          <div>{startText ? dayjs(startText).format('YYYY-MM-DD') : '-'}</div>
+          <div>{endText ? dayjs(endText).format('YYYY-MM-DD') : '-'}</div>
         </div>
-        <div>
-          {endText ? dayjs(endText).format('YYYY-MM-DD HH:mm:ss') : '-'}
-        </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  /**
-   *如果是时间类型的值
-   */
-  if (valueType === 'time' && text) {
-    return dayjs(text).format('HH:mm:ss');
+    /**
+     *如果是日期加时间类型的值
+     */
+    if (valueType === 'dateTime' && text) {
+      return dayjs(text).format('YYYY-MM-DD HH:mm:ss');
+    }
+
+    /**
+     *如果是日期加时间类型的值的值
+     */
+    if (
+      valueType === 'dateTimeRange' &&
+      text &&
+      Array.isArray(text) &&
+      text.length === 2
+    ) {
+      // 值不存在的时候显示 "-"
+      const [startText, endText] = text;
+      return (
+        <div>
+          <div>
+            {startText ? dayjs(startText).format('YYYY-MM-DD HH:mm:ss') : '-'}
+          </div>
+          <div>
+            {endText ? dayjs(endText).format('YYYY-MM-DD HH:mm:ss') : '-'}
+          </div>
+        </div>
+      );
+    }
+
+    /**
+     *如果是时间类型的值
+     */
+    if (valueType === 'time' && text) {
+      return dayjs(text).format('HH:mm:ss');
+    }
   }
 
   if (valueType === 'progress') {

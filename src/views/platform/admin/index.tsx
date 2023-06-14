@@ -46,7 +46,7 @@ export default defineComponent({
       {
         title: '角色',
         dataIndex: 'roleId',
-        render: ({ record }) => {
+        render: ({ record }: any) => {
           return record.roleName;
         },
         valueType: 'select',
@@ -100,7 +100,7 @@ export default defineComponent({
           <a-form
             ref={formRef}
             model={formModel.value}
-            onSubmit={({ values, errors }) => {
+            onSubmit={({ values, errors }: any) => {
               if (!errors) {
                 data.onSubmit(values);
               }
@@ -151,7 +151,7 @@ export default defineComponent({
                 valueColumn="roleId"
                 labelColumn="roleName"
                 v-model={formModel.value.roleId}
-                onChange={(value, info) => {
+                onChange={(value: any, info: any) => {
                   formModel.value.roleName = info.roleName;
                 }}
                 placeholder="请选择角色"
@@ -201,8 +201,8 @@ export default defineComponent({
               rules={[
                 { required: true, message: '请填写重复密码' },
                 {
-                  validator: (value, cb) => {
-                    return new Promise((resolve) => {
+                  validator: (value: any, cb: any) => {
+                    return new Promise((resolve: any) => {
                       const { password } = formModel.value;
                       if (value && password !== value) {
                         cb('重复密码与密码不一致');
