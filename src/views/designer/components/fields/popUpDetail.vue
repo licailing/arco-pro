@@ -19,9 +19,9 @@
       <table-form
         v-model="data.options.items"
         :buttons="buttons"
-        row-key="dataIndex"
         :draggable="{ type: 'handle', width: 40 }"
         :columns="columns"
+        row-key="dataIndex"
       >
       </table-form>
     </a-form-item>
@@ -30,7 +30,6 @@
 
 <script lang="ts" setup>
   import { computed, ref, watch } from 'vue';
-  import { usePureProp } from '@arco-design/web-vue/es/_hooks/use-pure-prop';
 
   const props = defineProps({
     field: {

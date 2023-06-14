@@ -8,10 +8,10 @@
     }"
   >
     <a-form-item
+      v-show="show"
       :field="options.model"
       :tooltip="options.help"
       :label="options.showTitle ? name : ''"
-      v-show="show"
       :required="options.required"
     >
       <slot v-bind="$props">
@@ -28,8 +28,8 @@
           <div class="amount-input-txt">大写金额</div>
         </div>
         <a-descriptions
-          :column="1"
           v-if="type == 'popUpDetail'"
+          :column="1"
           :data="options.data"
           layout="inline-horizontal"
         />

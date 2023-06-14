@@ -13,11 +13,11 @@
       label="弹窗字段"
     >
       <TableForm
+        v-model="data.options.columns"
         :buttons="buttons"
-        row-key="dataIndex"
         :draggable="{ type: 'handle', width: 40 }"
         :columns="columns"
-        v-model="data.options.columns"
+        row-key="dataIndex"
       >
       </TableForm>
     </a-form-item>
@@ -50,7 +50,7 @@
       deep: true,
     }
   );
-  
+
   const columns = [
     {
       dataIndex: 'dataIndex',
