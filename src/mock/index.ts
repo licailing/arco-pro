@@ -9,6 +9,7 @@ import '@/views/user/setting/mock';
 import '@/views/platform/admin/mock';
 import '@/views/platform/role/mock';
 import '@/views/platform/premit/mock';
+import '@/views/designer/index/mock';
 
 Mock.setup({
   timeout: '600-1000',

@@ -30,6 +30,8 @@ export default {
   'menu.faq': 'FAQ',
   'navbar.docs': 'Docs',
   'navbar.action.locale': 'Switch to English',
+  'menu.designer': 'Low code design',
+  'menu.designer.index': 'design',
   ...localeSettings,
   ...localeMessageBox,
   ...localeLogin,

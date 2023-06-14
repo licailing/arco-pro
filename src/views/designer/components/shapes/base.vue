@@ -1,0 +1,112 @@
+<template>
+  <div
+    v-show="show"
+    class="shape-container"
+    :class="{
+      [`shape-container--active`]: active,
+      [`shape-container--${type}`]: type,
+    }"
+  >
+    <a-form-item
+      :field="options.model"
+      :tooltip="options.help"
+      :label="options.showTitle ? name : ''"
+      v-show="show"
+      :required="options.required"
+    >
+      <slot v-bind="$props">
+        <a-input
+          v-if="type == 'input'"
+          :placeholder="options.placeholder"
+        ></a-input>
+        <div v-if="type == 'amountInput'" style="width: 100%">
+          <a-input-number :placeholder="options.placeholder">
+            <template #suffix>
+              {{ options.unit }}
+            </template>
+          </a-input-number>
+          <div class="amount-input-txt">大写金额</div>
+        </div>
+        <a-descriptions
+          :column="1"
+          v-if="type == 'popUpDetail'"
+          :data="options.data"
+          layout="inline-horizontal"
+        />
+      </slot>
+    </a-form-item>
+  </div>
+</template>
+
+<script setup lang="ts">
+  defineProps({
+    index: {
+      type: Number,
+    },
+    active: Boolean,
+    options: {
+      type: Object,
+      required: true,
+    },
+    placeholder: {
+      type: String,
+      default: '',
+    },
+    type: String,
+    show: {
+      type: Boolean,
+      default: true,
+    },
+    name: String,
+    showTitle: {
+      type: Boolean,
+      default: true,
+    },
+  });
+</script>
+<script lang="ts">
+  export default {
+    name: 'ShapeBase',
+  };
+</script>
+
+<style lang="less" scoped>
+  .shape-container {
+    position: relative;
+    padding: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    background: #f4fcff;
+    border-radius: 6px;
+
+    &--active {
+      border: 1px solid rgb(var(--primary-6));
+    }
+
+    &--multiAdd {
+      &::after {
+        display: none;
+      }
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  .title {
+    &::after {
+      content: ':';
+    }
+  }
+
+  .amount-input-txt {
+    margin-top: 10px;
+    text-align: right;
+  }
+</style>
