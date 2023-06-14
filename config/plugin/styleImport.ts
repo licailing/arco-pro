@@ -47,6 +47,7 @@ export default function configStyleImportPlugin() {
             'icon',
             'dsubmenu',
             'dgroup',
+            'use-form-item'
           ];
           // List of components that need to map imported styles
           // 需要映射引入样式的组件列表
