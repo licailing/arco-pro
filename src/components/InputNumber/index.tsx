@@ -12,7 +12,7 @@ import { getPrefixCls } from '@arco-design/web-vue/es/_utils/global-config';
 import { isNumber, isUndefined } from '@arco-design/web-vue/es/_utils/is';
 import ArcoInput from '@arco-design/web-vue/es/input';
 import { Size } from '@arco-design/web-vue/es/_utils/constant';
-import { useFormItem } from '@arco-design/web-vue/es/_hooks/use-form-item';
+import { useFormItem } from '@arco-design/web-vue';
 import { useSize } from '@arco-design/web-vue/es/_hooks/use-size';
 import {
   getKeyDownHandler,

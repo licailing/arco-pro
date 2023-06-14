@@ -165,7 +165,7 @@
         debounceFetchData({
           url: url.value,
           searchValue: searchValue.value,
-          callback: (info: never[]) => {
+          callback: (info: any[]) => {
             options.value = info;
             loading.value = false;
           },

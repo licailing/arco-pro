@@ -11,7 +11,6 @@ import {
   toRefs,
   watch,
 } from 'vue';
-
 import {
   PaginationProps,
   Table,
