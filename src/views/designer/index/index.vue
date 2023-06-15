@@ -110,6 +110,10 @@
       let data = [];
       if (res.success) {
         data = res.data || [];
+        // 设置初始选中
+        if (data.length) {
+          setCurrentField(data[0]);
+        }
       }
       list.value = data;
     } catch (error) {}

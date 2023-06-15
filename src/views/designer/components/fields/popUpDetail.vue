@@ -77,7 +77,7 @@
       },
     },
     {
-      dataIndex: 'title',
+      dataIndex: 'label',
       title: '字段名称',
       ellipsis: true,
       formItemProps: {
@@ -109,6 +109,7 @@
       formSlotName: 'spanField',
       valueType: 'digit',
       fieldProps: {
+        defaultValue: 1,
         max: 3,
       },
     },

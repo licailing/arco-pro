@@ -1,5 +1,8 @@
 <template>
   <div>
+    <a-form-item label="请求链接" field="options.customUrl">
+      <a-input v-model="data.options.customUrl"></a-input>
+    </a-form-item>
     <a-form-item label="最大限制" field="options.max">
       <InputDecimal
         v-model="data.options.max"

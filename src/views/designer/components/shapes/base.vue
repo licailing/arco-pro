@@ -30,7 +30,7 @@
         <a-descriptions
           v-if="type == 'popUpDetail'"
           :column="1"
-          :data="options.data"
+          :data="options.items"
           layout="inline-horizontal"
         />
       </slot>

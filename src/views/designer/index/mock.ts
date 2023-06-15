@@ -1,6 +1,8 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Mock from 'mockjs';
+import qs from 'query-string';
 import setupMock, { successResponseWrap } from '@/utils/setup-mock';
+import { GetParams } from '@/types/global';
 import { getObject } from '@/utils/storage';
 
 const fields = [
@@ -11,7 +13,7 @@ const fields = [
       isRow: false,
       rowCol: 1,
       show: true,
-      required: false,
+      required: true,
       help: '',
       showTitle: true,
       placeholder: '请输入',
@@ -29,7 +31,7 @@ const fields = [
       isRow: false,
       rowCol: 1,
       show: true,
-      required: false,
+      required: true,
       help: '',
       showTitle: true,
       placeholder: '请输入',
@@ -57,9 +59,12 @@ const fields = [
       disabled: false,
       max: 1,
       remote: false,
-      customUrl: '',
+      customUrl: '/api/designer/user',
       rowKey: '',
-      columns: [],
+      columns: [
+        { dataIndex: 'name', title: '姓名', showInSearch: true },
+        { dataIndex: 'age', title: '年龄', showInSearch: false },
+      ],
       buttons: [],
       popUpMethod: 'GET',
       trigger: [],
@@ -81,8 +86,11 @@ const fields = [
       defaultValue: '',
       placeholder: '请选择',
       effect: [],
-      associateModel: '',
-      items: [],
+      associateModel: 'popUpTable_1686491107973',
+      items: [
+        { dataIndex: 'name', label: '姓名' },
+        { dataIndex: 'age', label: '年龄' },
+      ],
       column: 3,
     },
     key: '1686491109701',
@@ -145,14 +153,42 @@ const fields = [
     model: 'multiAdd_1686491111568',
   },
 ];
-
+const users = Mock.mock({
+  'list|150': [
+    {
+      'id|+1': 1,
+      'name|4-8': /[A-Z]/,
+      'age|1-2': /[0-9]/,
+    },
+  ],
+});
 function getDesigner() {
   const data = getObject('designer-data') || fields;
   return successResponseWrap(data);
 }
+function getUserLiser(options: GetParams) {
+  const { url } = options;
+  const params = qs.parseUrl(url).query as any;
+  const p = (params.current as number) || 1;
+  const ps = (params.pageSize as number) || 20;
 
+  let dataSource: any[] = users.list;
+
+  if (params.name) {
+    dataSource = dataSource.filter((data) =>
+      data.name.includes(params.name || '')
+    );
+  }
+
+  const result = {
+    list: dataSource.slice((p - 1) * ps, p * ps),
+    total: dataSource.length,
+  };
+  return successResponseWrap(result);
+}
 setupMock({
   setup() {
     Mock.mock(new RegExp('/api/designer/detail'), getDesigner);
+    Mock.mock(new RegExp('/api/designer/user'), getUserLiser);
   },
 });
