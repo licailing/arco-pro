@@ -114,6 +114,12 @@ export default defineComponent({
       type: [String, Boolean] as PropType<ColumnEmptyText>,
       default: '-',
     },
+    selected: {
+      type: Array,
+    },
+    defaultSelected: {
+      type: Array,
+    },
   },
   emits: {
     change: (
@@ -155,7 +161,9 @@ export default defineComponent({
     const {
       rowSelection,
       selectedKeys,
+      selected,
       defaultSelectedKeys,
+      defaultSelected,
       formSearch: defaultFormSearch,
       pagination: propsPagination,
     } = toRefs(props);
@@ -168,10 +176,11 @@ export default defineComponent({
         props.formRef(formRefC);
       }
     };
-    const selectedRows = ref<Array<any>>([]);
-    const { selectedRowKeys } = useRowSelection({
+    const { selectedRowKeys, selectedRows } = useRowSelection({
       selectedKeys,
       defaultSelectedKeys,
+      selected,
+      defaultSelected,
       rowSelection,
     });
     /** 通用的来操作子节点的工具类 */
@@ -264,7 +273,7 @@ export default defineComponent({
           return;
         }
         const duplicateRemoveMap = new Map();
-        if (data.length) {
+        if (data && data.length) {
           const rows: any[] = [...data, ...selectedRows.value].filter(
             (item, index) => {
               if (!props.rowKey) {
@@ -418,6 +427,12 @@ export default defineComponent({
       },
       onReset,
     };
+    const getSelected = () => {
+      return {
+        selectedKeys: selectedRowKeys.value,
+        selectedRows: selectedRows.value,
+      };
+    };
     const render = () => {
       return (
         <a-card bordered={false}>
@@ -488,6 +503,7 @@ export default defineComponent({
       render,
       selectedRowKeys,
       selectedRows,
+      getSelected,
       tableRef,
       action,
       onSubmit,

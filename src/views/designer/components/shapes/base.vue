@@ -15,18 +15,25 @@
       :required="options.required"
     >
       <slot v-bind="$props">
+        <!-- 文本 -->
         <a-input
           v-if="type == 'input'"
           :placeholder="options.placeholder"
+          :model-value="options.defaultValue"
         ></a-input>
+        <!-- 金额输入框 -->
         <div v-if="type == 'amountInput'" style="width: 100%">
-          <a-input-number :placeholder="options.placeholder">
+          <a-input-number
+            :placeholder="options.placeholder"
+            :model-value="options.defaultValue"
+          >
             <template #suffix>
               {{ options.unit }}
             </template>
           </a-input-number>
           <div class="amount-input-txt">大写金额</div>
         </div>
+        <!-- 弹窗选择明细 -->
         <a-descriptions
           v-if="type == 'popUpDetail'"
           :column="1"

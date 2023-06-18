@@ -5,7 +5,9 @@
         请将组件拖入到下方白色块中
       </div>
       <Shape v-model:list="data.columns" type="multiAdd"></Shape>
-      <div class="add-txt">+添加</div>
+      <div v-if="data.options.showAdd" class="add-txt">{{
+        data.options.addTitle || '+添加'
+      }}</div>
     </div>
   </ShapeBase>
 </template>

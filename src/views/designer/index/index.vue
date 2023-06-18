@@ -29,7 +29,7 @@
       <a-layout-content class="main">
         <a-form
           ref="shapeFormRef"
-          layout="vertical"
+          :layout="formSetting.layout"
           :model="shapeFormModel"
           class="mainForm"
         >
@@ -41,9 +41,14 @@
         <a-tabs v-model="fieldSettingCurrent">
           <a-tab-pane key="field" title="字段属性">
             <!-- 属性设置 -->
-            <a-form ref="fieldFormRef" :model="fieldFormModel" class="mainForm">
+            <a-form
+              v-if="currentField"
+              ref="fieldFormRef"
+              :model="currentField"
+              class="mainForm"
+            >
               <Field
-                v-if="currentField"
+                :key="currentField.key"
                 v-model:field="currentField"
                 :list="list"
               ></Field>
@@ -55,14 +60,10 @@
               :model="formSetting"
               label-width="80px"
             >
-              <a-form-item field="labelPosition" label="标签对齐">
-                <a-radio-group
-                  v-model="formSetting.labelPosition"
-                  type="button"
-                >
-                  <a-radio value="left">左</a-radio>
-                  <a-radio value="right">右</a-radio>
-                  <a-radio value="top">顶部</a-radio>
+              <a-form-item field="layout" label="标签对齐">
+                <a-radio-group v-model="formSetting.layout" type="button">
+                  <a-radio value="horizontal">水平排列</a-radio>
+                  <a-radio value="vertical">垂直排列</a-radio>
                 </a-radio-group>
               </a-form-item>
               <a-form-item field="rowCol" label="布局">
@@ -77,43 +78,59 @@
         </a-tabs>
       </a-layout-sider>
     </a-layout>
+    <a-modal
+      :visible="review"
+      title="预览"
+      fullscreen
+      :unmount-on-close="true"
+      @ok="handlePreviewSave"
+      @cancel="review = false"
+    >
+      <DesignerForm
+        ref="previewFormRef"
+        :list="list"
+        :form-setting="formSetting"
+      />
+    </a-modal>
   </a-card>
 </template>
 
 <script setup lang="ts">
-  import { ref, reactive, provide, onMounted, Ref } from 'vue';
+  import { ref, reactive, provide, onMounted, Ref, toRaw } from 'vue';
   import { VueDraggableNext } from 'vue-draggable-next';
   import axios from 'axios';
   import { Message } from '@arco-design/web-vue';
   import { setObject } from '@/utils/storage';
   import { HttpResponse } from '@/api/interceptor';
+  import DesignerForm from '@/components/DesignerForm';
   import Shape from '../components/shapes/shape.vue';
   import Field from '../components/fields/field.vue';
   import { settings } from './designerSettings';
   import { FormSetting, designInjectionKey } from './context';
 
   const review = ref(false);
-  const fieldFormModel = ref({});
   const fieldFormRef = ref();
   const shapeFormModel = ref({});
   const shapeFormRef = ref();
+  const previewFormRef = ref();
   const list = ref<any[]>([]);
   const fieldSettingCurrent = ref('field');
   const currentField = ref<any>(undefined);
   const formSetting = ref<FormSetting>({
-    labelPosition: 'top',
+    layout: 'vertical',
     rowCol: 3,
   }) as Ref;
   const initData = async () => {
     try {
-      const res: HttpResponse<any[]> = await axios.get('/api/designer/detail');
+      const res: HttpResponse<any> = await axios.get('/api/designer/detail');
       let data = [];
       if (res.success) {
-        data = res.data || [];
+        data = res.data.list || [];
         // 设置初始选中
         if (data.length) {
-          setCurrentField(data[0]);
+          setCurrentField(data[0], false);
         }
+        formSetting.value = res.data.formSetting;
       }
       list.value = data;
     } catch (error) {}
@@ -122,14 +139,44 @@
     initData();
   });
   const handleSave = () => {
-    setObject('designer-data', list.value);
-    Message.success('保存成功');
+    // 保存需要校验必填
+    fieldFormRef.value.validate((errors: any) => {
+      if (!errors) {
+        setObject('designer-data', {
+          list: list.value,
+          formSetting: toRaw(formSetting.value),
+        });
+        Message.success('保存成功');
+      } else {
+        Message.error('请填写必填项');
+      }
+    });
   };
   const handleReview = () => {
     review.value = true;
   };
-  const setCurrentField = (field: any) => {
-    currentField.value = field;
+  const setCurrentField = (field: any, validate = true) => {
+    if (!validate) {
+      currentField.value = field;
+      return;
+    }
+    // 切换的需要校验必填
+    fieldFormRef.value.validate((errors: any) => {
+      if (!errors) {
+        currentField.value = field;
+      } else {
+        Message.error('请填写必填项');
+      }
+    });
+  };
+
+  const handlePreviewSave = () => {
+    previewFormRef.value.validate((errors: any) => {
+      if (!errors) {
+        setObject('previewFormData', previewFormRef.value.formModel);
+        Message.success('保存成功');
+      }
+    });
   };
   provide(
     designInjectionKey,
@@ -137,7 +184,6 @@
       currentField,
       setCurrentField,
       formSetting,
-      fieldFormModel,
     })
   );
 </script>

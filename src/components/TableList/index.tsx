@@ -547,9 +547,16 @@ export default defineComponent({
         </div>
       );
     };
+
+    const getSelected = () => {
+      return tableRef.value.getSelected();
+    };
+
     return {
       render,
       renderOptionColumn,
+      tableRef,
+      getSelected,
     };
   },
   render() {

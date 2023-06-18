@@ -1,13 +1,13 @@
 <template>
   <div>
     <!-- 公共设置 -->
-    <a-form-item field="isRow" label="占一行">
+    <a-form-item field="options.isRow" label="占一行">
       <a-checkbox v-model="data.options.isRow"></a-checkbox>
     </a-form-item>
     <a-form-item
       v-if="formRowCol >= 1"
       v-show="!data.options.isRow"
-      field="rowCol"
+      field="options.rowCol"
       label="布局"
     >
       <a-radio-group v-model="data.options.rowCol" type="button">
@@ -16,26 +16,48 @@
         >
       </a-radio-group>
     </a-form-item>
-    <a-form-item field="model" label="表单字段">
+    <a-form-item
+      field="model"
+      label="字段名"
+      :rules="[{ required: true, message: '不能为空' }]"
+    >
       <a-input v-model="data.model"></a-input>
     </a-form-item>
-    <a-form-item field="showTitle" label="显示标题">
+    <a-form-item field="options.showTitle" label="显示标题">
       <a-checkbox v-model="data.options.showTitle"></a-checkbox>
     </a-form-item>
-    <a-form-item label="必填" field="required">
+    <a-form-item label="必填" field="options.required">
       <a-switch v-model="data.options.required"></a-switch>
     </a-form-item>
     <a-form-item field="name" label="标题">
       <a-input v-model="data.name"></a-input>
     </a-form-item>
-    <a-form-item field="help" label="提示语">
+    <a-form-item
+      v-if="'defaultValue' in data.options"
+      field="options.defaultValue"
+      label="默认值"
+    >
+      <a-input v-model="data.options.defaultValue"></a-input>
+    </a-form-item>
+    <a-form-item field="options.help" label="提示语">
       <a-textarea v-model="data.options.help" allow-clear></a-textarea>
     </a-form-item>
+    <!-- 动态表单 -->
+    <template v-if="data.type === 'multiAdd'">
+      <a-form-item label="是否添加" field="options.showAdd">
+        <a-checkbox v-model="data.options.showAdd"></a-checkbox>
+      </a-form-item>
+      <a-form-item label="添加标题" field="options.addTitle">
+        <a-input v-model="data.options.addTitle"></a-input>
+      </a-form-item>
+    </template>
+    <!-- 动态表单 -->
     <!-- 特有属性设置 -->
     <component
       :is="fieldComponent"
       v-if="fieldComponent"
       v-bind="$props"
+      :field="data"
       @update:field="handleChange"
     ></component>
   </div>

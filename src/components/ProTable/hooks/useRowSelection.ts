@@ -6,9 +6,13 @@ import type { BaseType } from '../../_utils/types';
 export const useRowSelection = ({
   selectedKeys,
   defaultSelectedKeys,
+  selected,
+  defaultSelected,
   rowSelection,
 }: {
   selectedKeys: Ref<BaseType[] | undefined>;
+  selected: Ref<any[]>;
+  defaultSelected: Ref<any[]>;
   defaultSelectedKeys: Ref<BaseType[] | undefined>;
   rowSelection: Ref<TableRowSelection | undefined>;
 }) => {
@@ -21,8 +25,11 @@ export const useRowSelection = ({
       []
   );
 
+  const selectedRows = ref(selected.value ?? defaultSelected.value ?? []);
+
   return {
     isRadio,
     selectedRowKeys,
+    selectedRows,
   };
 };

@@ -19,7 +19,7 @@ export const settings = [
         },
       },
       {
-        type: 'amountInput',
+        type: 'money',
         name: '金额输入框',
         options: {
           isRow: false, // 是否独占一行
@@ -29,7 +29,6 @@ export const settings = [
           help: '', // 提示语
           showTitle: true,
           placeholder: '请输入',
-          defaultValue: '',
           disabled: false,
           effect: [],
           unit: '元',
@@ -51,7 +50,6 @@ export const settings = [
           showTitle: true, // 标题是否显示
           required: false,
           help: '', // 提示语
-          defaultValue: '', // 表单字段名称
           placeholder: '请选择', // 填写说明
           disabled: false, // 是否可输入
           max: 1, // 可选中多少个
@@ -75,7 +73,6 @@ export const settings = [
           showTitle: true, // 标题是否显示
           required: false,
           help: '', // 提示语
-          defaultValue: '', // 表单字段名称
           placeholder: '请选择', // 填写说明
           effect: [],
           associateModel: '', // 关联字段
@@ -83,7 +80,6 @@ export const settings = [
           column: 3, // 每行放置的数据个数
         },
       },
-
       {
         type: 'multiAdd',
         name: '动态表单',
@@ -95,8 +91,9 @@ export const settings = [
           required: false,
           help: '', // 提示语
           showTitle: true,
-          defaultValue: [],
           disabled: false,
+          showAdd: true,
+          addTitle: '+添加',
           effect: [],
         },
       },

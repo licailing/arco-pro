@@ -15,6 +15,7 @@ import AutoListView from './AutoListView/index.vue';
 import TableList from './TableList';
 import InputDecimal from './InputDecimal';
 import TableForm from './TableForm';
+import FoldContent from './FoldContent/index.vue';
 
 // Manually introduce ECharts modules to reduce packing size
 
@@ -39,5 +40,6 @@ export default {
     Vue.component('TableList', TableList);
     Vue.component('InputDecimal', InputDecimal);
     Vue.component('TableForm', TableForm);
+    Vue.component('FoldContent', FoldContent);
   },
 };
