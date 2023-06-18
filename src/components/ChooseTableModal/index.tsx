@@ -84,7 +84,7 @@ export default defineComponent({
       const selected = [];
       if (computedValue.value) {
         if (multiple.value) {
-          const labelArr = computedValue.value.map((item) => {
+          const labelArr = computedValue.value.map((item: any) => {
             selectedRowKeys.push(item[props.rowKey || 'id']);
             selected.push(item);
             return item[props.labelKey];

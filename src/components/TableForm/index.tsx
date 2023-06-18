@@ -76,7 +76,12 @@ const renderColumnButton = ({
   record: any;
   rowKey: string;
   modal: boolean;
-  handleItemUpdate: (data: { add: boolean; record: any; path: string }) => void;
+  handleItemUpdate: (data: {
+    add: boolean;
+    record: any;
+    path: string;
+    rowIndex: number;
+  }) => void;
   handleRemove: (
     key: (string | number)[],
     confirmInfo: any,
@@ -253,7 +258,7 @@ export default defineComponent({
     const handleRemove = (
       key: (string | number)[],
       confirmInfo: any,
-      rowIndex
+      rowIndex: number
     ) => {
       Modal.confirm({
         title: '删除确认',
@@ -392,6 +397,7 @@ export default defineComponent({
                   add: true,
                   record: {},
                   path,
+                  rowIndex: -1,
                 });
               }}
               class="sword-button-add"

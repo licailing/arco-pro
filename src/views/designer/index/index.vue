@@ -90,7 +90,7 @@
       <DesignerForm
         ref="previewFormRef"
         :list="list"
-        :defaultValue="previewFormModel"
+        :default-value="previewFormModel"
         :form-setting="formSetting"
       />
     </a-modal>
