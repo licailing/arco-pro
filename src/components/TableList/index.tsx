@@ -158,14 +158,26 @@ const renderColumnButton = ({
           {name || '编辑'}
         </a-button>
       ) : (
-        <router-link to={`${path}/${key}`} class="table-list-button">
+        <router-link
+          onClick={(e: Event) => {
+            e.stopPropagation();
+          }}
+          to={`${path}/${key}`}
+          class="table-list-button"
+        >
           {name || '编辑'}
         </router-link>
       );
     default:
       // 链接
       return (
-        <router-link to={`${path}/${key}`} class="table-list-button">
+        <router-link
+          onClick={(e: Event) => {
+            e.stopPropagation();
+          }}
+          to={`${path}/${key}`}
+          class="table-list-button"
+        >
           {name}
         </router-link>
       );
@@ -347,7 +359,13 @@ export default defineComponent({
               {name || '新增'}
             </a-button>
           ) : (
-            <router-link class="table-list-button" to={button.path}>
+            <router-link
+              onClick={(e: Event) => {
+                e.stopPropagation();
+              }}
+              class="table-list-button"
+              to={button.path}
+            >
               <a-button
                 type="primary"
                 v-slots={{
