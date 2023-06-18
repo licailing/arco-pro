@@ -79,16 +79,18 @@
       </a-layout-sider>
     </a-layout>
     <a-modal
-      :visible="review"
+      :visible="preview"
       title="预览"
       fullscreen
       :unmount-on-close="true"
+      ok-text="保存"
       @ok="handlePreviewSave"
-      @cancel="review = false"
+      @cancel="preview = false"
     >
       <DesignerForm
         ref="previewFormRef"
         :list="list"
+        :defaultValue="previewFormModel"
         :form-setting="formSetting"
       />
     </a-modal>
@@ -100,7 +102,7 @@
   import { VueDraggableNext } from 'vue-draggable-next';
   import axios from 'axios';
   import { Message } from '@arco-design/web-vue';
-  import { setObject } from '@/utils/storage';
+  import { getObject, setObject } from '@/utils/storage';
   import { HttpResponse } from '@/api/interceptor';
   import DesignerForm from '@/components/DesignerForm';
   import Shape from '../components/shapes/shape.vue';
@@ -108,11 +110,12 @@
   import { settings } from './designerSettings';
   import { FormSetting, designInjectionKey } from './context';
 
-  const review = ref(false);
+  const preview = ref(false);
   const fieldFormRef = ref();
   const shapeFormModel = ref({});
   const shapeFormRef = ref();
   const previewFormRef = ref();
+  const previewFormModel = ref(getObject('preview-form-data'));
   const list = ref<any[]>([]);
   const fieldSettingCurrent = ref('field');
   const currentField = ref<any>(undefined);
@@ -153,7 +156,7 @@
     });
   };
   const handleReview = () => {
-    review.value = true;
+    preview.value = true;
   };
   const setCurrentField = (field: any, validate = true) => {
     if (!validate) {
@@ -173,7 +176,8 @@
   const handlePreviewSave = () => {
     previewFormRef.value.validate((errors: any) => {
       if (!errors) {
-        setObject('previewFormData', previewFormRef.value.formModel);
+        setObject('preview-form-data', previewFormRef.value.formModel);
+        preview.value = false;
         Message.success('保存成功');
       }
     });

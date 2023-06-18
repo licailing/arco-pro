@@ -15,6 +15,9 @@ const inputDecimalTypes = ['digit', 'decimal', 'money', 'percent'];
 export default defineComponent({
   name: 'DesignerForm',
   props: {
+    defaultValue: {
+      type: Object,
+    },
     list: {
       type: Array as PropType<any[]>,
       default: () => [],
@@ -40,7 +43,7 @@ export default defineComponent({
     const { t } = useI18n();
 
     // 初始化默认值
-    const initFormModel = () => {
+    const initFormModel = (defaultValue: any) => {
       const model: any = {};
       if (!Array.isArray(props.list) || !props.list.length) {
         return model;
@@ -52,10 +55,13 @@ export default defineComponent({
         if (item.options.defaultValue) {
           model[item.model] = item.options.defaultValue;
         }
+        if (defaultValue && defaultValue[item.model]) {
+          model[item.model] = defaultValue[item.model];
+        }
       }
       return model;
     };
-    const formModel = ref<any>(initFormModel());
+    const formModel = ref<any>(initFormModel(props.defaultValue));
     // 一行显示rowCol(最大3个)个 每列占多少
     const colSpan = computed(() => 24 / (formSetting.value.rowCol || 3));
     const renderFormItem = (item: any) => {
@@ -154,7 +160,7 @@ export default defineComponent({
       if (type === 'multiAdd') {
         return (
           <div style={{ width: '100%' }}>
-            {formModel.value[item.model].map((_: any, i: number) => {
+            {formModel.value[item.model].map((addItem: any, i: number) => {
               return (
                 <a-card
                   key={i}
@@ -167,6 +173,7 @@ export default defineComponent({
                         parentField={`${item.model}[${i}]`}
                         list={item.columns || []}
                         type="multiAdd"
+                        defaultValue={addItem}
                         onChange={(value: any) => {
                           formModel.value[item.model][i] = value;
                         }}

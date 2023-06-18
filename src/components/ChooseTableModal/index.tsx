@@ -82,9 +82,9 @@ export default defineComponent({
       let text;
       const selectedRowKeys = [];
       const selected = [];
-      if (_value.value) {
+      if (computedValue.value) {
         if (multiple.value) {
-          const labelArr = _value.value.map((item) => {
+          const labelArr = computedValue.value.map((item) => {
             selectedRowKeys.push(item[props.rowKey || 'id']);
             selected.push(item);
             return item[props.labelKey];
@@ -93,9 +93,9 @@ export default defineComponent({
             labelArr.length > 3 ? '等' : ''
           }`;
         } else {
-          text = _value.value[props.labelKey];
-          selectedRowKeys.push(_value.value[props.rowKey || 'id']);
-          selected.push(_value.value);
+          text = computedValue.value[props.labelKey];
+          selectedRowKeys.push(computedValue.value[props.rowKey || 'id']);
+          selected.push(computedValue.value);
         }
       }
       return {
@@ -144,7 +144,7 @@ export default defineComponent({
         <div style={{ width: '100%' }}>
           {slots.default ? (
             slots.default({
-              value: _value.value,
+              value: computedValue.value,
               text: selectedInfo.value.text,
             })
           ) : (

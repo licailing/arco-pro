@@ -35,6 +35,7 @@ export interface ModalFormData {
   onCancel: () => void;
   onSubmit: (values: any) => void;
   formRef: Ref;
+  rowIndex: number;
 }
 export interface ButtonItem {
   // action: 1 toolbar ,2 操作按钮, 3 即时操作按钮也是toolbar按钮如删除
@@ -68,6 +69,7 @@ const renderColumnButton = ({
   handleItemUpdate,
   handleRemove,
   simple,
+  rowIndex,
 }: {
   button: ButtonItem;
   action: ActionType;
@@ -75,8 +77,13 @@ const renderColumnButton = ({
   rowKey: string;
   modal: boolean;
   handleItemUpdate: (data: { add: boolean; record: any; path: string }) => void;
-  handleRemove: (key: (string | number)[], confirmInfo: any) => void;
+  handleRemove: (
+    key: (string | number)[],
+    confirmInfo: any,
+    rowIndex: number
+  ) => void;
   simple: boolean;
+  rowIndex: number;
 }) => {
   const buttonData: ButtonData = { type: 'column', record };
   // 判断按钮是否显示
@@ -123,7 +130,7 @@ const renderColumnButton = ({
           onClick={(e: Event) => {
             e.preventDefault();
             e.stopPropagation();
-            handleRemove([key], confirmInfo);
+            handleRemove([key], confirmInfo, rowIndex);
           }}
         >
           {simple ? <icon-delete /> : name || '删除'}
@@ -142,20 +149,33 @@ const renderColumnButton = ({
               add: false,
               record,
               path,
+              rowIndex,
             });
           }}
         >
           {simple ? <icon-edit /> : name || '编辑'}
         </a-button>
       ) : (
-        <router-link to={`${path}/${key}`} class="table-list-button">
+        <router-link
+          onClick={(e: Event) => {
+            e.stopPropagation();
+          }}
+          to={`${path}/${key}`}
+          class="table-list-button"
+        >
           {name || '编辑'}
         </router-link>
       );
     default:
       // 链接
       return (
-        <router-link to={`${path}/${key}`} class="table-list-button">
+        <router-link
+          onClick={(e: Event) => {
+            e.stopPropagation();
+          }}
+          to={`${path}/${key}`}
+          class="table-list-button"
+        >
           {name}
         </router-link>
       );
@@ -217,19 +237,24 @@ export default defineComponent({
     const visible = ref(false);
     const rowData = ref<any>({});
     const isAdd = ref(false);
+    const currentRowIndex = ref(-1);
     const updatePath = ref('');
     const { eventHandlers } = useFormItem();
-    const _value = ref<any[]>(props.defaultValue || []);
 
-    const computedValue = computed(() => props.modelValue ?? _value.value);
+    const computedValue = computed(
+      () => props.modelValue ?? (props.defaultValue || [])
+    );
     const handleChange = (value: any, e: Event | undefined) => {
-      _value.value = value;
       emit('update:modelValue', value);
       emit('change', value, (e || {}) as Event);
       eventHandlers.value?.onChange?.(e);
     };
 
-    const handleRemove = (key: (string | number)[], confirmInfo: any) => {
+    const handleRemove = (
+      key: (string | number)[],
+      confirmInfo: any,
+      rowIndex
+    ) => {
       Modal.confirm({
         title: '删除确认',
         content: '确定删除选中记录?',
@@ -238,9 +263,8 @@ export default defineComponent({
         messageType: 'warning',
         cancelText: '取消',
         async onOk() {
-          const newValue = _value.value.filter(
-            (item) => !key.includes(item[props.rowKey])
-          );
+          const newValue = [...computedValue.value];
+          newValue.splice(rowIndex, 1);
           handleChange(newValue, undefined);
           return true;
         },
@@ -249,23 +273,18 @@ export default defineComponent({
       });
     };
     const handleUpdate = async (fields = {}) => {
-      const newValue = _value.value.concat(fields);
+      let newValue;
+      // 更新
+      if (currentRowIndex.value > -1) {
+        newValue = [...computedValue.value];
+        newValue[currentRowIndex.value] = fields;
+      } else {
+        // 新增
+        newValue = computedValue.value.concat(fields);
+      }
       handleChange(newValue, undefined);
       return true;
     };
-
-    watch(computedValue, (cur) => {
-      if (_value.value !== cur) {
-        _value.value = cur;
-      }
-    });
-
-    watch(modelValue, (val) => {
-      if (isUndefined(val) || isNull(val)) {
-        _value.value = [];
-      }
-    });
-
     // 操作按钮
     const columnButtons = computed(() => {
       const buttons: ButtonItem[] = props.buttons || [];
@@ -305,12 +324,15 @@ export default defineComponent({
       add,
       record,
       path,
+      rowIndex = -1,
     }: {
       add: boolean;
       record: any;
       path: string;
+      rowIndex: number;
     }) => {
       isAdd.value = add;
+      currentRowIndex.value = rowIndex;
       let newRecord = { ...record };
       if (props.beforeSave) {
         newRecord = props.beforeSave(newRecord);
@@ -378,7 +400,13 @@ export default defineComponent({
               {name || '新增'}
             </a-button>
           ) : (
-            <router-link class="table-list-button" to={button.path}>
+            <router-link
+              onClick={(e: Event) => {
+                e.stopPropagation();
+              }}
+              class="table-list-button"
+              to={button.path}
+            >
               <a-button type="primary">{name || '新增'}</a-button>
             </router-link>
           );
@@ -406,6 +434,7 @@ export default defineComponent({
             render: ({
               record,
               action,
+              rowIndex,
             }: {
               text: any;
               record: any;
@@ -422,6 +451,7 @@ export default defineComponent({
                   handleItemUpdate,
                   handleRemove,
                   simple: simple.value,
+                  rowIndex,
                 })
               );
             },
@@ -440,6 +470,7 @@ export default defineComponent({
           onCancel: handleCancel,
           onSubmit: handleSubmit,
           formRef,
+          rowIndex: currentRowIndex.value,
         };
         return slots['modal-form'](data);
       }
@@ -471,7 +502,7 @@ export default defineComponent({
       return (
         <a-table-column
           v-slots={{
-            cell: ({ record }: { record: any }) => {
+            cell: ({ record, rowIndex }: { record: any; rowIndex: number }) => {
               return (
                 <a-space
                   class="pro-table-options"
@@ -487,6 +518,7 @@ export default defineComponent({
                           handleItemUpdate,
                           handleRemove,
                           simple: simple.value,
+                          rowIndex,
                         })
                       ),
                   }}
