@@ -1,5 +1,6 @@
 import { defineComponent, ref } from 'vue';
-import TableList, { ModalFormData } from '@/components/TableList';
+import type { ModalFormData } from '@/components/TableList/interface';
+import TableList from '@/components/TableList';
 import AutoListView from '@/components/AutoListView/index.vue';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
 

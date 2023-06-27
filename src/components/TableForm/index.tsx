@@ -2,63 +2,17 @@ import {
   PropType,
   defineComponent,
   ref,
-  watch,
   toRef,
   computed,
   Ref,
   toRefs,
 } from 'vue';
 import { useFormItem, Modal } from '@arco-design/web-vue';
-import { isNull, isUndefined } from '@arco-design/web-vue/es/_utils/is';
 import ProTable from '../ProTable';
 import { ActionType, ToolBarData } from '../ProTable/interface';
-import { UseFetchDataAction } from '../ProTable/components/useFetchData';
+import { ButtonItem, ButtonData, ModalFormData } from './interface';
 import { setFields } from '../ProTable/components/utils';
 import './index.less';
-
-export interface RenderData {
-  record: any;
-  column: any;
-  rowIndex: number;
-}
-
-export interface ButtonData {
-  type: 'column' | 'toolbar';
-  data?: ToolBarData<any>;
-  record?: any;
-}
-
-export interface ModalFormData {
-  isAdd: boolean;
-  rowData: any;
-  visible: Ref;
-  onCancel: () => void;
-  onSubmit: (values: any) => void;
-  formRef: Ref;
-  rowIndex: number;
-}
-export interface ButtonItem {
-  // action: 1 toolbar ,2 操作按钮, 3 即时操作按钮也是toolbar按钮如删除
-  action: number;
-  path: string | ((record: any) => string);
-  // type: column 列表操作, toolbar: 工具栏
-  name: string | ((data: ButtonData) => string);
-  alias: string;
-  handleClick: ({
-    record,
-    action,
-    data,
-    type,
-  }: {
-    record?: any;
-    action?: UseFetchDataAction;
-    data?: ToolBarData<any>;
-    type: 'column' | 'toolbar';
-  }) => any;
-  getCustomConfirm: (record: any) => any;
-  // 按钮是否显示
-  show: (data: ButtonData) => boolean;
-}
 
 const renderColumnButton = ({
   button,

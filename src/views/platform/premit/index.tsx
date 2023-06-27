@@ -1,4 +1,4 @@
-import { defineComponent } from 'vue';
+import { defineComponent, ref, Ref } from 'vue';
 import TableList from '@/components/TableList';
 import axios from 'axios';
 import { Message } from '@arco-design/web-vue';
@@ -7,6 +7,14 @@ import Breadcrumb from '@/components/breadcrumb/index.vue';
 export default defineComponent({
   name: 'Premit',
   setup(props) {
+    const actionRef = ref();
+    const actionRefFun = (actionRefC: Ref) => {
+      actionRef.value = actionRefC;
+    };
+    const lightActionRef = ref();
+    const actionLightRefFun = (actionRefC: Ref) => {
+      lightActionRef.value = actionRefC;
+    };
     const columns = [
       {
         title: 'ID',
@@ -106,6 +114,60 @@ export default defineComponent({
           },
         },
         {
+          action: 1,
+          name: '刷新',
+          handleClick: () => {
+            // 只刷新当前页
+            actionRef.value.reload();
+          },
+        },
+        {
+          action: 1,
+          name: '重置', // 清空查询条件、选中行、重置到第一页
+          handleClick: () => {
+            actionRef.value.reset();
+          },
+        },
+        {
+          action: 2,
+          alias: 'edit',
+          path: '/api/premit/update',
+          name: '编辑',
+        },
+        {
+          action: 2,
+          alias: 'delete',
+          path: '/api/premit/delete',
+          name: '删除',
+        },
+      ];
+      const buttons1 = [
+        {
+          action: 1,
+          name: '生成平台权限',
+          handleClick: async ({ action }: any) => {
+            const ok = await handleGenerate();
+            if (ok) {
+              action.reload();
+            }
+          },
+        },
+        {
+          action: 1,
+          name: '刷新',
+          handleClick: () => {
+            // 只刷新当前页
+            lightActionRef.value.reload();
+          },
+        },
+        {
+          action: 1,
+          name: '重置', // 清空查询条件、选中行、重置到第一页
+          handleClick: () => {
+            lightActionRef.value.reset();
+          },
+        },
+        {
           action: 2,
           alias: 'edit',
           path: '/api/premit/update',
@@ -126,7 +188,25 @@ export default defineComponent({
             columns={columns}
             url="/api/premit/list"
             modal
+            actionRef={actionRefFun}
             buttons={buttons}
+            rowSelection={{ type: 'checkbox', showCheckedAll: true }}
+            pagination={{
+              defaultPageSize: 5,
+            }}
+          ></TableList>
+          <TableList
+            rowKey="premitId"
+            columns={columns}
+            url="/api/premit/list"
+            modal
+            actionRef={actionLightRefFun}
+            searchType="light"
+            buttons={buttons1}
+            rowSelection={{ type: 'checkbox', showCheckedAll: true }}
+            pagination={{
+              defaultPageSize: 5,
+            }}
           ></TableList>
         </div>
       );

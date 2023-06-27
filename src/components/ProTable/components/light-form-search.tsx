@@ -9,6 +9,7 @@ import {
   watch,
   onMounted,
   toRef,
+  watchEffect,
 } from 'vue';
 import { getPrefixCls } from '@arco-design/web-vue/es/_utils/global-config';
 import { useI18n } from 'vue-i18n';
@@ -80,23 +81,43 @@ export default defineComponent({
         ...props.search,
       };
     });
-    const searchText = ref('');
+    const searchText = ref<string | undefined>(undefined);
     const visible = ref(false);
     const formModel = ref<{ [propName: string]: any }>({});
     const setFields = (defaultFormData: any) => {
       const fieldsData = formatFormFields(defaultFormData);
       lightFormRef.value.setFields(fieldsData);
     };
+
+    const handleReset = () => {
+      emit('reset');
+    };
+    const onSubmitClick = async () => {
+      const res = await lightFormRef.value?.validate();
+      if (!res) {
+        emit('submit', formModel.value);
+        visible.value = false;
+      }
+    };
+    const onReset = () => {
+      lightFormRef.value?.resetFields();
+      searchText.value = undefined;
+      handleReset();
+    };
+
     // 设置表单初始值：能过滤掉不在form-item的数据
     onMounted(() => {
       setFields(defaultFormData.value);
-      if (!props.formRef) {
-        return;
-      }
-      if (typeof props.formRef === 'function') {
+    });
+
+    watchEffect(() => {
+      if (typeof props.formRef === 'function' && lightFormRef.value) {
+        lightFormRef.value.submit = onSubmitClick;
+        lightFormRef.value.reset = onReset;
         props.formRef(lightFormRef.value);
       }
     });
+
     watch(
       defaultFormData,
       (defaultFormData) => {
@@ -161,16 +182,6 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
 
-    const handleReset = () => {
-      emit('reset');
-    };
-    const onSubmitClick = async () => {
-      const res = await lightFormRef.value?.validate();
-      if (!res) {
-        emit('submit', formModel.value);
-        visible.value = false;
-      }
-    };
     const renderPowerContent = () => {
       return (
         <div class={`${prefixCls}-power-popover`}>
@@ -244,9 +255,7 @@ export default defineComponent({
               placeholder={t('lightFormSearch:inputPlaceholder')}
               buttonText={t('lightFormSearch:enterButton')}
               style={{ 'width': '420px', 'margin-right': '8px' }}
-              onChange={(value: string) => {
-                searchText.value = value;
-              }}
+              v-model={searchText.value}
               defauleValue={props.formSearch[searchConfig.value.name]}
               onSearch={(keyword: string) => {
                 emit('search', { [searchConfig.value.name]: keyword });

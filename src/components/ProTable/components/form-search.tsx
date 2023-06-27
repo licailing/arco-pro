@@ -10,6 +10,7 @@ import {
   VNodeTypes,
   watch,
   toRef,
+  watchEffect,
 } from 'vue';
 import { GridProps, ValidatedError } from '@arco-design/web-vue';
 import { useI18n } from 'vue-i18n';
@@ -329,16 +330,23 @@ export default defineComponent({
       getDefaultSearch(props.search, t, props.type === 'form')
     );
     const isForm = computed(() => props.type === 'form');
+    const onReset = () => {
+      formSearchRef.value.resetFields();
+      handleReset();
+    };
     // 设置表单初始值：能过滤掉不在form-item的数据
     onMounted(() => {
       setFields(defaultFormData.value, formSearchRef.value);
-      if (!props.formRef) {
-        return;
-      }
-      if (typeof props.formRef === 'function') {
+    });
+
+    watchEffect(() => {
+      if (typeof props.formRef === 'function' && formSearchRef.value) {
+        formSearchRef.value.submit = handleSubmit;
+        formSearchRef.value.reset = onReset;
         props.formRef(formSearchRef.value);
       }
     });
+
     watch(
       defaultFormData,
       (defaultFormData) => {
@@ -511,13 +519,7 @@ export default defineComponent({
               {searchConfig.value.cancelText}
             </a-button>
           ) : (
-            <a-button
-              onClick={() => {
-                formSearchRef.value.resetFields();
-                handleReset();
-              }}
-              type="primary"
-            >
+            <a-button onClick={onReset} type="primary">
               {searchConfig.value.resetText}
             </a-button>
           )}

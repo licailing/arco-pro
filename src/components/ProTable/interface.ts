@@ -212,6 +212,10 @@ export interface ProTableProps extends Omit<TableProps, 'columns'> {
    * 空值时显示
    */
   columnEmptyText?: ColumnEmptyText;
+  // 表单ref
+  formRef?: (formRef: Ref) => void;
+  // action ref
+  actionRef?: (actionRef: Ref) => void;
 }
 
 export type UseFetchProps = {

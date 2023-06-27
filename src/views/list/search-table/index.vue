@@ -96,7 +96,8 @@
   import { computed } from 'vue';
   import { useI18n } from 'vue-i18n';
   import type { TableColumnData } from '@arco-design/web-vue/es/table/interface';
-  import TableList, { ButtonData } from '@/components/TableList';
+  import type { ButtonData } from '@/components/TableList/interface';
+  import TableList from '@/components/TableList';
 
   const { t } = useI18n();
   const columns = computed<TableColumnData[]>(() => [

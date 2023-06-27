@@ -10,6 +10,7 @@ import {
   toRaw,
   toRefs,
   watch,
+  watchEffect,
 } from 'vue';
 import {
   PaginationProps,
@@ -109,6 +110,9 @@ export default defineComponent({
     },
     formRef: {
       type: Function as PropType<(formRef: Ref) => void>,
+    },
+    actionRef: {
+      type: Function as PropType<(actionRef: Ref) => void>,
     },
     columnEmptyText: {
       type: [String, Boolean] as PropType<ColumnEmptyText>,
@@ -299,6 +303,8 @@ export default defineComponent({
       if (props.rowSelection && props.rowSelection.onChange) {
         props.rowSelection.onChange([], []);
       }
+      selectedRowKeys.value = [];
+      selectedRows.value = [];
     };
 
     useActionType(actionRef, action, {
@@ -328,10 +334,17 @@ export default defineComponent({
         // 清空排序
         _sorter.value = undefined;
         // 重置表单
-        formRef?.value?.resetFields();
+        formRef?.value?.reset();
         formSearch.value = {};
       },
     });
+
+    watchEffect(() => {
+      if (typeof props.actionRef === 'function') {
+        props.actionRef(actionRef.value);
+      }
+    });
+
     const pagination = computed(() => {
       return (
         props.pagination !== false &&
