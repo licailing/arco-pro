@@ -1,11 +1,7 @@
 <template>
   <div>
     <a-form-item label="金额单位" field="options.unit">
-      <pro-select
-        v-model="data.options.unit"
-        :options="options"
-      >
-      </pro-select>
+      <pro-select v-model="data.options.unit" :options="options"> </pro-select>
     </a-form-item>
   </div>
 </template>

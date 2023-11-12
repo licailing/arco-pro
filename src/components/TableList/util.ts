@@ -1,7 +1,10 @@
 import { Modal, Message } from '@arco-design/web-vue';
 import axios from 'axios';
 import { HttpResponse } from '@/api/interceptor';
-import type { ActionType } from '@arco-vue-pro-components/pro-components';
+import type {
+  ActionType,
+  UseFetchDataAction,
+} from '@arco-vue-pro-components/pro-components';
 
 /**
  *  删除节点
@@ -10,7 +13,7 @@ import type { ActionType } from '@arco-vue-pro-components/pro-components';
 export const handleRemove = (
   path: string,
   keys: (string | number)[],
-  action: ActionType,
+  action: UseFetchDataAction<any>,
   confirmInfo: any
 ) => {
   if (keys.length <= 0) {

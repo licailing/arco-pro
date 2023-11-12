@@ -505,7 +505,6 @@ export default defineComponent({
             columns={mergeColumns.value}
             search={false}
             headerTitle=""
-            size="small"
             toolBarRender={
               props.toolBarRender !== false || props.modal || slots['tool-bar']
                 ? (data: ToolBarData<any>) => {
@@ -535,7 +534,9 @@ export default defineComponent({
                   }
                 : undefined,
             }}
-            onChange={handleChange}
+            onChange={(data) => {
+              handleChange(data, undefined);
+            }}
           />
           {props.modal && renderModalForm()}
         </div>

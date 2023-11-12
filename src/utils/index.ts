@@ -1,5 +1,3 @@
-import { isObject } from "@arco-design/web-vue/es/_utils/is";
-
 type TargetContext = '_self' | '_parent' | '_blank' | '_top';
 
 export const openWindow = (
