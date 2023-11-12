@@ -22,7 +22,7 @@
           :model-value="options.defaultValue"
         ></a-input>
         <!-- 金额输入框 -->
-        <div v-if="type == 'amountInput'" style="width: 100%">
+        <div v-if="type == 'money'" style="width: 100%">
           <a-input-number
             :placeholder="options.placeholder"
             :model-value="options.defaultValue"

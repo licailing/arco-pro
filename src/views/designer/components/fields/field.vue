@@ -69,7 +69,7 @@
   import { DesignContext, designInjectionKey } from '../../index/context';
   import FieldPopUpTable from './popUpTable.vue';
   import FieldPopUpDetail from './popUpDetail.vue';
-  import AmountInput from './amountInput.vue';
+  import Money from './money.vue';
 
   const props = defineProps({
     field: {
@@ -105,7 +105,7 @@
   );
   const fieldSettings: any = {
     popUpTable: FieldPopUpTable,
-    amountInput: AmountInput,
+    money: Money,
     popUpDetail: FieldPopUpDetail,
   };
   const fieldComponent = computed(() =>

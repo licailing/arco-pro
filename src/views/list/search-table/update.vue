@@ -16,7 +16,7 @@
                 :rules="[{ required: true, message: '请输入申请金额' }]"
                 field="money"
               >
-                <InputDecimal
+                <pro-input-number
                   v-model="formData.money"
                   :type="formData.unit"
                   capital-unit="万元"
@@ -35,7 +35,7 @@
                 field="money1"
                 :rules="[{ required: true, message: '请输入申请金额' }]"
               >
-                <InputDecimal
+                <pro-input-number
                   v-model="formData.money1"
                   placeholder="请输入申请金额"
                   type="money"
@@ -49,7 +49,7 @@
                 field="rate"
                 :rules="[{ required: true, message: '请输入保证金比例' }]"
               >
-                <InputDecimal
+                <pro-input-number
                   v-model="formData.rate"
                   placeholder="请输入保证金比例"
                   type="percent"
@@ -62,7 +62,7 @@
                 field="rate1"
                 :rules="[{ required: true, message: '请输入保证金比例' }]"
               >
-                <InputDecimal
+                <pro-input-number
                   v-model="formData.rate1"
                   placeholder="请输入保证金"
                   type="decimal"
@@ -75,7 +75,7 @@
                 field="fileNumber"
                 :rules="[{ required: true, message: '请输入文件份数' }]"
               >
-                <InputDecimal
+                <pro-input-number
                   v-model="formData.fileNumber"
                   placeholder="请输入文件份数"
                   type="int"
@@ -316,7 +316,6 @@
   import { ref } from 'vue';
   import { FormInstance } from '@arco-design/web-vue/es/form';
   import useLoading from '@/hooks/loading';
-  import InputDecimal from '@/components/InputDecimal';
 
   const formData = ref({
     money: undefined,

@@ -79,7 +79,7 @@ export default defineComponent({
       //   金额、百分比、纯数字输入框
       if (inputDecimalTypes.includes(type)) {
         return (
-          <input-decimal
+          <pro-input-number
             type={type}
             capitalUnit={options.unit}
             placeholder={placeholder || t('tableForm.inputPlaceholder')}

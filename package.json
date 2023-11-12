@@ -30,7 +30,8 @@
     ]
   },
   "dependencies": {
-    "@arco-design/web-vue": "2.45.3",
+    "@arco-design/web-vue": "^2.45.3",
+    "@arco-vue-pro-components/pro-components": "^1.0.0",
     "@vueuse/core": "^9.3.0",
     "axios": "^0.24.0",
     "body-parser": "^1.20.2",

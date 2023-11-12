@@ -1,4 +1,12 @@
-import { defineComponent, toRefs, ref, PropType, computed, watch } from 'vue';
+import {
+  defineComponent,
+  toRefs,
+  ref,
+  PropType,
+  computed,
+  watch,
+  Ref,
+} from 'vue';
 import { Message, useFormItem } from '@arco-design/web-vue';
 import { isNull, isUndefined } from '@arco-design/web-vue/es/_utils/is';
 import TableList from '@/components/TableList';
@@ -60,7 +68,11 @@ export default defineComponent({
   setup(props, { slots, emit }) {
     const { modelValue } = toRefs(props);
     const { eventHandlers } = useFormItem();
-    const tableRef = ref();
+    const actionRef = ref();
+    const setActionRef = (ref: Ref) => {
+      console.log('ref', ref);
+      actionRef.value = ref;
+    };
     const visible = ref(false);
     const _value = ref<any[] | undefined>(props.defaultValue || undefined);
     const multiple = computed(() => props.max > 1);
@@ -124,7 +136,7 @@ export default defineComponent({
 
     const handleOk = () => {
       // 获取选中的
-      const data = tableRef.value.getSelected();
+      const data = actionRef.value.getSelected();
       handleChange(
         multiple.value ? data.selectedRows : data.selectedRows?.[0],
         undefined
@@ -170,8 +182,8 @@ export default defineComponent({
             unmountOnClose
           >
             <table-list
-              ref={tableRef}
               {...props}
+              actionRef={setActionRef}
               pagination={{
                 pageSize: 5,
                 pageSizeOptions: [5, 10, 20],

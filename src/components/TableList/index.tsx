@@ -11,11 +11,14 @@ import qs from 'query-string';
 import axios from 'axios';
 import { TableData } from '@arco-design/web-vue';
 import { HttpResponse } from '@/api/interceptor';
-import ProTable from '../ProTable';
-import { ActionType, ToolBarData } from '../ProTable/interface';
+import { ProTable } from '@arco-vue-pro-components/pro-components';
+import { setFields } from '@arco-vue-pro-components/pro-components/es/pro-table/utils';
+import type {
+  ActionType,
+  ToolBarData,
+} from '@arco-vue-pro-components/pro-components';
 import { ButtonItem, ButtonData, ModalFormData } from './interface';
-import { handleForbidden, handleRemove, handleUpdate } from './util';
-import { setFields } from '../ProTable/components/utils';
+import { handleRemove, handleUpdate } from './util';
 import './index.less';
 
 const renderColumnButton = ({
@@ -81,20 +84,6 @@ const renderColumnButton = ({
           }}
         >
           {name || '删除'}
-        </a-button>
-      );
-    case 'enable':
-      return (
-        <a-button
-          type="text"
-          size="small"
-          onClick={(e: Event) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleForbidden(path, record, action, confirmInfo);
-          }}
-        >
-          {name || record.status === 0 ? '启用' : '禁用'}
         </a-button>
       );
     case 'edit': // 编辑
@@ -178,8 +167,17 @@ export default defineComponent({
   },
   setup(props, { attrs, slots }) {
     const columns = toRef(props, 'columns');
-    const tableRef = ref();
-    const formRef = ref();
+    const modalFormRef = ref();
+    const actionRef = ref();
+    const setModalFormRef = (ref: Ref) => {
+      modalFormRef.value = ref;
+    };
+    const setActionRef = (ref: Ref) => {
+      actionRef.value = ref;
+      if (props.actionRef) {
+        props.actionRef(ref);
+      }
+    };
     const visible = ref(false);
     const rowData = ref<any>({});
     const isAdd = ref(false);
@@ -199,12 +197,9 @@ export default defineComponent({
       );
     });
 
-    const formRefFun = (formRefC: Ref) => {
-      formRef.value = formRefC;
-    };
     onActivated(() => {
       if (props.cache) {
-        tableRef.value.action.reload();
+        actionRef.value.reload();
       }
     });
 
@@ -223,7 +218,7 @@ export default defineComponent({
         fields,
         isAdd.value,
         updatePath.value,
-        tableRef.value.action
+        actionRef.value
       );
       if (ok) {
         visible.value = false;
@@ -243,14 +238,16 @@ export default defineComponent({
       if (props.beforeSave) {
         newRecord = props.beforeSave(newRecord);
       }
-      if (formRef.value) {
+      if (modalFormRef.value) {
         // 清除校验状态
-        formRef.value.clearValidate();
+        modalFormRef.value.clearValidate();
         // 重置或设置表单值
-        add ? formRef.value.resetFields() : setFields(newRecord, formRef.value);
+        add
+          ? modalFormRef.value.resetFields()
+          : setFields(newRecord, modalFormRef.value);
         // 新增下级情况
         if (add && Object.keys(newRecord).length) {
-          setFields(newRecord, formRef.value);
+          setFields(newRecord, modalFormRef.value);
         }
       }
       updatePath.value = path;
@@ -280,7 +277,7 @@ export default defineComponent({
             onClick={(e: Event) => {
               e.stopPropagation();
               e.preventDefault();
-              button.handleClick({ data, type: 'toolbar' });
+              button.handleClick({ ...data, type: 'toolbar' });
             }}
           >
             {name}
@@ -421,7 +418,7 @@ export default defineComponent({
           visible,
           onCancel: handleCancel,
           onSubmit: handleSubmit,
-          formRef,
+          formRef: modalFormRef,
         };
         return slots['modal-form'](data);
       }
@@ -435,8 +432,7 @@ export default defineComponent({
           footer={false}
         >
           <ProTable
-            formRef={formRefFun}
-            onCancel={handleCancel}
+            formRef={setModalFormRef}
             onSubmit={handleSubmit}
             columns={props.columns}
             type="form"
@@ -463,7 +459,7 @@ export default defineComponent({
                       columnButtons.value.map((button: ButtonItem) =>
                         renderColumnButton({
                           button,
-                          action: tableRef.value.action,
+                          action: actionRef.value,
                           record,
                           rowKey: props.rowKey,
                           modal: props.modal,
@@ -482,10 +478,10 @@ export default defineComponent({
     const render = () => {
       return (
         <div class="table-list">
-          <ProTable
-            ref={tableRef}
+          <pro-table
             {...props}
             {...attrs}
+            actionRef={setActionRef}
             request={props.data ? undefined : fetchData}
             columns={mergeColumns.value}
             toolBarRender={
@@ -523,15 +519,8 @@ export default defineComponent({
       );
     };
 
-    const getSelected = () => {
-      return tableRef.value.getSelected();
-    };
-
     return {
       render,
-      renderOptionColumn,
-      tableRef,
-      getSelected,
     };
   },
   render() {

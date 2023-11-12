@@ -1,6 +1,9 @@
 import { Ref } from 'vue';
-import { ProTableProps, ToolBarData } from '../ProTable/interface';
-import { UseFetchDataAction } from '../ProTable/components/useFetchData';
+import type {
+  ProTableProps,
+  ToolBarData,
+  UseFetchDataAction,
+} from '@arco-vue-pro-components/pro-components';
 
 export interface RenderData {
   record: any;

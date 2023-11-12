@@ -4,11 +4,11 @@
       <a-input v-model="data.options.customUrl"></a-input>
     </a-form-item>
     <a-form-item label="最大限制" field="options.max">
-      <InputDecimal
+      <pro-input-number
         v-model="data.options.max"
         type="digit"
         :max="100"
-      ></InputDecimal>
+      ></pro-input-number>
     </a-form-item>
     <a-form-item
       field="options.columns"
@@ -85,7 +85,7 @@
       dataIndex: 'showInSearch',
       title: '是否支持检索',
       hideInTable: true,
-      valueType: 'radioGroup',
+      valueType: 'radio',
       fieldProps: {
         defaultValue: false,
         options: [

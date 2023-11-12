@@ -1,7 +1,6 @@
 import { defineComponent, ref } from 'vue';
 import type { ModalFormData } from '@/components/TableList/interface';
 import TableList from '@/components/TableList';
-import AutoListView from '@/components/AutoListView/index.vue';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
 
 export default defineComponent({
@@ -147,7 +146,7 @@ export default defineComponent({
                 },
               ]}
             >
-              <AutoListView
+              <pro-select
                 url="/api/role/all"
                 valueColumn="roleId"
                 labelColumn="roleName"
@@ -168,7 +167,7 @@ export default defineComponent({
                 },
               ]}
             >
-              <AutoListView
+              <pro-select
                 options={[
                   {
                     label: '正常',
@@ -248,6 +247,7 @@ export default defineComponent({
                 columns={columns}
                 modal
                 buttons={buttons}
+                defaultFormData={{ status: 1 }}
                 rowSelection={{ type: 'radio' }}
               ></TableList>
             </a-card>

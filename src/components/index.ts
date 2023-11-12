@@ -11,9 +11,7 @@ import {
 } from 'echarts/components';
 import Chart from './chart/index.vue';
 import Breadcrumb from './breadcrumb/index.vue';
-import AutoListView from './AutoListView/index.vue';
 import TableList from './TableList';
-import InputDecimal from './InputDecimal';
 import TableForm from './TableForm';
 import FoldContent from './FoldContent/index.vue';
 
@@ -36,9 +34,7 @@ export default {
   install(Vue: App) {
     Vue.component('Chart', Chart);
     Vue.component('Breadcrumb', Breadcrumb);
-    Vue.component('AutoListView', AutoListView);
     Vue.component('TableList', TableList);
-    Vue.component('InputDecimal', InputDecimal);
     Vue.component('TableForm', TableForm);
     Vue.component('FoldContent', FoldContent);
   },

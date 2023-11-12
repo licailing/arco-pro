@@ -1,13 +1,11 @@
 <template>
   <div>
     <a-form-item label="金额单位" field="options.unit">
-      <AutoListView
+      <pro-select
         v-model="data.options.unit"
         :options="options"
-        label-column="label"
-        value-column="value"
       >
-      </AutoListView>
+      </pro-select>
     </a-form-item>
   </div>
 </template>

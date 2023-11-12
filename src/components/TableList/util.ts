@@ -1,7 +1,7 @@
 import { Modal, Message } from '@arco-design/web-vue';
 import axios from 'axios';
 import { HttpResponse } from '@/api/interceptor';
-import { ActionType } from '../ProTable/interface';
+import type { ActionType } from '@arco-vue-pro-components/pro-components';
 
 /**
  *  删除节点
@@ -48,38 +48,6 @@ export const handleRemove = (
     ...confirmInfo,
   });
   return false;
-};
-
-export const handleForbidden = (
-  path: string,
-  record: any,
-  action: ActionType,
-  confirmInfo: any
-) => {
-  const statusName = record.status === 0 ? '启用' : '禁用';
-  const title = `${statusName}确认`;
-  const content = `确定${statusName}选中记录?`;
-  const data: any = { id: record.id, status: Number(record.status) ? 0 : 1 };
-  Modal.confirm({
-    title,
-    content,
-    okText: '确定',
-    titleAlign: 'start',
-    messageType: record.status === 0 ? 'primary' : 'warning',
-    cancelText: '取消',
-    async onOk() {
-      const response: HttpResponse = await axios.get(path, {
-        params: data,
-      });
-      if (response.success) {
-        Message.success(response.msg);
-        action.reload();
-      } else {
-        Message.error(response.msg || '操作失败');
-      }
-    },
-    ...confirmInfo,
-  });
 };
 
 /**

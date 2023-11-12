@@ -8,10 +8,13 @@ import {
   toRefs,
 } from 'vue';
 import { useFormItem, Modal } from '@arco-design/web-vue';
-import ProTable from '../ProTable';
-import { ActionType, ToolBarData } from '../ProTable/interface';
+import { ProTable } from '@arco-vue-pro-components/pro-components';
+import { setFields } from '@arco-vue-pro-components/pro-components/es/pro-table/utils';
+import type {
+  ActionType,
+  ToolBarData,
+} from '@arco-vue-pro-components/pro-components';
 import { ButtonItem, ButtonData, ModalFormData } from './interface';
-import { setFields } from '../ProTable/components/utils';
 import './index.less';
 
 const renderColumnButton = ({
@@ -445,7 +448,7 @@ export default defineComponent({
         >
           <ProTable
             formRef={formRefFun}
-            onCancel={handleCancel}
+            onReset={handleCancel}
             onSubmit={handleSubmit}
             columns={props.columns}
             type="form"

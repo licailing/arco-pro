@@ -10,7 +10,7 @@ interface AdminItem {
   username: string;
   roleId: string;
   roleName: string;
-  status: number;
+  status: string;
   password: string;
   repassword: string;
 }
@@ -25,7 +25,7 @@ let admins: AdminItem[] = [
     roleName: '管理员',
     password: '',
     repassword: '',
-    status: 1,
+    status: '1',
   },
   {
     uid: '1',
@@ -35,7 +35,7 @@ let admins: AdminItem[] = [
     roleName: '超级管理员',
     password: '',
     repassword: '',
-    status: 2,
+    status: '2',
   },
 ];
 

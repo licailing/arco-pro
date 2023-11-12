@@ -1,8 +1,8 @@
-import TableList from '@/components/TableList';
 import { Ref, defineComponent, onMounted, ref } from 'vue';
 import axios from 'axios';
+import type { RenderFormItemData } from '@arco-vue-pro-components/pro-components';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
-import { RenderFormItemData } from '@/components/ProTable/interface';
+import TableList from '@/components/TableList';
 
 export default defineComponent({
   name: 'Role',
@@ -94,7 +94,7 @@ export default defineComponent({
             url="/api/role/list"
             modal
             buttons={buttons}
-          ></TableList>{' '}
+          ></TableList>
         </div>
       );
     };

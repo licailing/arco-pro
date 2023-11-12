@@ -4,12 +4,12 @@
       <auto-list-view
         v-model="data.options.associateModel"
         :options="options"
-        label-column="name"
-        value-column="model"
+        label-key="name"
+        value-key="model"
       />
     </a-form-item>
     <a-form-item label="每行个数" field="options.column">
-      <input-decimal v-model="data.options.column" type="digit" :max="4" />
+      <pro-input-number v-model="data.options.column" type="digit" :max="4" />
     </a-form-item>
     <a-form-item
       field="options.items"
@@ -93,7 +93,7 @@
       dataIndex: 'isRow',
       title: '是否占一行',
       hideInTable: true,
-      valueType: 'radioGroup',
+      valueType: 'radio',
       fieldProps: {
         defaultValue: false,
         options: [
