@@ -1,7 +1,7 @@
 # 基于arco-design组件库vue3 ProTable、TableList组件
 ## 组件都是用 TypeScript 编写的、通过eslint、mock数据模拟真实操作
 git链接: [https://github.com/licailing/arco-pro](https://github.com/licailing/arco-pro)
-预览地址: [http://139.159.191.219:3000/](http://139.159.191.219:3000/)
+预览地址: [http://47.120.3.125:3000/](http://47.120.3.125:3000/)
 
 # 运行
 
