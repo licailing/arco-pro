@@ -9,10 +9,10 @@ export default defineComponent({
   setup(props) {
     const formModel = ref<any>({});
     const fetchRole = async (value) => {
-      console.log('fetchRole', value)
+      console.log('fetchRole', value);
       const res = await axios.get(`/api/role/all`);
       return res?.data || [];
-    }
+    };
     const columns = [
       {
         title: 'ID',
@@ -151,7 +151,7 @@ export default defineComponent({
             >
               <pro-select
                 request={fetchRole}
-                columnKey='roleId'
+                columnKey="roleId"
                 valueKey="roleId"
                 labelKey="roleName"
                 valueOption
