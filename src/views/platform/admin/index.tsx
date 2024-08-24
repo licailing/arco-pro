@@ -1,4 +1,5 @@
 import { defineComponent, ref } from 'vue';
+import axios from 'axios';
 import type { ModalFormData } from '@/components/TableList/interface';
 import TableList from '@/components/TableList';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
@@ -7,6 +8,11 @@ export default defineComponent({
   name: 'Admin',
   setup(props) {
     const formModel = ref<any>({});
+    const fetchRole = async (value) => {
+      console.log('fetchRole', value)
+      const res = await axios.get(`/api/role/all`);
+      return res?.data || [];
+    }
     const columns = [
       {
         title: 'ID',
@@ -46,14 +52,11 @@ export default defineComponent({
       {
         title: '角色',
         dataIndex: 'roleId',
-        render: ({ record }: any) => {
-          return record.roleName;
-        },
         valueType: 'select',
         fieldProps: {
-          url: '/api/role/all',
-          valueColumn: 'roleId',
-          labelColumn: 'roleName',
+          request: fetchRole,
+          valueKey: 'roleId',
+          labelKey: 'roleName',
           placeholder: '请选择角色',
         },
       },
@@ -147,9 +150,11 @@ export default defineComponent({
               ]}
             >
               <pro-select
-                url="/api/role/all"
-                valueColumn="roleId"
-                labelColumn="roleName"
+                request={fetchRole}
+                columnKey='roleId'
+                valueKey="roleId"
+                labelKey="roleName"
+                valueOption
                 v-model={formModel.value.roleId}
                 onChange={(value: any, info: any) => {
                   formModel.value.roleName = info.roleName;
@@ -179,8 +184,8 @@ export default defineComponent({
                   },
                 ]}
                 v-model={formModel.value.status}
-                valueColumn="value"
-                labelColumn="label"
+                valueKey="value"
+                labelKey="label"
                 placeholder="请选择状态"
               />
             </a-form-item>
