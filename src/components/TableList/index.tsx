@@ -14,7 +14,7 @@ import { HttpResponse } from '@/api/interceptor';
 import { ProTable } from '@arco-vue-pro-components/pro-components';
 import { setFields } from '@arco-vue-pro-components/pro-components/es/pro-table/utils';
 import type {
-  UseFetchDataAction,
+  ActionType,
   ToolBarData,
 } from '@arco-vue-pro-components/pro-components';
 import { ButtonItem, ButtonData, ModalFormData } from './interface';
@@ -30,7 +30,7 @@ const renderColumnButton = ({
   handleItemUpdate,
 }: {
   button: ButtonItem;
-  action: UseFetchDataAction<any>;
+  action: ActionType;
   record: any;
   rowKey: string;
   modal: boolean;
@@ -277,7 +277,7 @@ export default defineComponent({
             onClick={(e: Event) => {
               e.stopPropagation();
               e.preventDefault();
-              button.handleClick({ ...data, type: 'toolbar' });
+              button.handleClick({ data, action: data.action, type: 'toolbar' });
             }}
           >
             {name}

@@ -1,8 +1,5 @@
-import { GetParams } from '@/types/global';
-import Mock from 'mockjs';
-import qs from 'query-string';
-import setupMock, { successResponseWrap } from '@/utils/setup-mock';
-import sysPremits from './sysPremits';
+import { successResponseWrap } from '@/utils/setup-mock';
+import sysPremits from './_sysPremits';
 
 interface PermitItem {
   moduleName: string;
@@ -64,14 +61,11 @@ function generatePremit() {
   return successResponseWrap('ok');
 }
 
-function getPremit(options: GetParams) {
-  const { url } = options;
-  const params = qs.parseUrl(url).query as any;
-
+function getPremit({ query }: any) {
   let dataSource = premits;
 
-  if (params.sorter) {
-    const s = params.sorter.split('.');
+  if (query.sorter) {
+    const s = query.sorter.split('.');
     dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
@@ -80,30 +74,30 @@ function getPremit(options: GetParams) {
     });
   }
 
-  if (params.premitId) {
+  if (query.premitId) {
     dataSource = dataSource.filter((data) =>
-      data.premitId.includes(params.premitId || '')
+      data.premitId.includes(query.premitId || '')
     );
   }
 
-  if (params.premitModule) {
+  if (query.premitModule) {
     dataSource = dataSource.filter((data) =>
-      data.premitModule.includes(params.premitModule || '')
+      data.premitModule.includes(query.premitModule || '')
     );
   }
-  if (params.premitModuleDesc) {
+  if (query.premitModuleDesc) {
     dataSource = dataSource.filter((data) =>
-      data.premitModuleDesc.includes(params.premitModuleDesc || '')
+      data.premitModuleDesc.includes(query.premitModuleDesc || '')
     );
   }
-  if (params.premitAction) {
+  if (query.premitAction) {
     dataSource = dataSource.filter((data) =>
-      data.premitAction.includes(params.premitAction || '')
+      data.premitAction.includes(query.premitAction || '')
     );
   }
-  if (params.premitActionDesc) {
+  if (query.premitActionDesc) {
     dataSource = dataSource.filter((data) =>
-      data.premitActionDesc.includes(params.premitActionDesc || '')
+      data.premitActionDesc.includes(query.premitActionDesc || '')
     );
   }
 
@@ -115,8 +109,7 @@ function getPremit(options: GetParams) {
   return successResponseWrap(result);
 }
 
-function updatePremit(options: GetParams) {
-  const body = options.body ? JSON.parse(options.body) || {} : {};
+function updatePremit({ body }: any) {
   const {
     premitId,
     premitAction,
@@ -198,23 +191,38 @@ function getMenu() {
   return successResponseWrap(menuData);
 }
 
-function deletePremit(options: GetParams) {
-  const { url } = options;
-  const params = qs.parseUrl(url).query as any;
-  if (!params.ids) {
+function deletePremit({ query }: any) {
+  if (!query.ids) {
     return successResponseWrap('ok');
   }
-  const ids = params.ids.split(',');
+  const ids = query.ids.split(',');
   premits = premits.filter((item) => ids.indexOf(item.premitId) === -1);
   return successResponseWrap('ok');
 }
-
-setupMock({
-  setup() {
-    Mock.mock(new RegExp('/api/premit/generate'), generatePremit);
-    Mock.mock(new RegExp('/api/premit/list'), getPremit);
-    Mock.mock(new RegExp('/api/premit/update'), updatePremit);
-    Mock.mock(new RegExp('/api/premit/delete'), deletePremit);
-    Mock.mock(new RegExp('/api/premit/menu'), getMenu);
+export default [
+  {
+    url: '/api/premit/generate',
+    method: 'get',
+    response: generatePremit,
   },
-});
+  {
+    url: '/api/premit/list',
+    method: 'get',
+    response: getPremit,
+  },
+  {
+    url: '/api/premit/update',
+    method: 'post',
+    response: updatePremit,
+  },
+  {
+    url: '/api/premit/delete',
+    method: 'get',
+    response: deletePremit,
+  },
+  {
+    url: '/api/premit/menu',
+    method: 'get',
+    response: getMenu,
+  },
+];

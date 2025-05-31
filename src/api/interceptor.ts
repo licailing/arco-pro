@@ -12,9 +12,9 @@ export interface HttpResponse<T = unknown> {
   success: boolean;
 }
 
-if (import.meta.env.VITE_API_BASE_URL) {
-  axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
-}
+// if (import.meta.env.VITE_API_BASE_URL) {
+//   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+// }
 
 axios.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -41,14 +41,14 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (response: AxiosResponse<HttpResponse>) => {
     const res = response.data;
-    console.log(
-      '--------\nrequest[url]:%o,[method]:%o,[options]:%o\nresponse[data]:%o\n------',
-      response.request.custom.url,
-      response.request.custom.method,
-      response.request.custom.options,
-      response.data,
-      JSON.stringify(response.data)
-    );
+    // console.log(
+    //   '--------\nrequest[url]:%o,[method]:%o,[options]:%o\nresponse[data]:%o\n------',
+    //   response.request.custom.url,
+    //   response.request.custom.method,
+    //   response.request.custom.options,
+    //   response.data,
+    //   JSON.stringify(response.data)
+    // );
     // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 20000) {
       Message.error({

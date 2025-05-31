@@ -1,10 +1,7 @@
 import { Modal, Message } from '@arco-design/web-vue';
 import axios from 'axios';
 import { HttpResponse } from '@/api/interceptor';
-import type {
-  ActionType,
-  UseFetchDataAction,
-} from '@arco-vue-pro-components/pro-components';
+import type { ActionType } from '@arco-vue-pro-components/pro-components';
 
 /**
  *  删除节点
@@ -13,7 +10,7 @@ import type {
 export const handleRemove = (
   path: string,
   keys: (string | number)[],
-  action: UseFetchDataAction<any>,
+  action: ActionType | undefined,
   confirmInfo: any
 ) => {
   if (keys.length <= 0) {
@@ -38,7 +35,7 @@ export const handleRemove = (
         hide.close();
         if (success) {
           Message.success('删除成功，即将刷新');
-          action.reload();
+          action?.reload();
           return true;
         }
       } catch (error) {

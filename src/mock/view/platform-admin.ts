@@ -1,8 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import Mock from 'mockjs';
-import qs from 'query-string';
-import setupMock, { successResponseWrap } from '@/utils/setup-mock';
-import { GetParams } from '@/types/global';
+import { successResponseWrap } from '@/utils/setup-mock';
 
 interface AdminItem {
   uid: string;
@@ -39,15 +35,11 @@ let admins: AdminItem[] = [
   },
 ];
 
-function getAdmin(options: GetParams) {
-  const { url } = options;
-
-  const params = qs.parseUrl(url).query as any;
-
+function getAdmin({ query }: any) {
   let dataSource = admins;
 
-  if (params.sorter) {
-    const s: string[] = params.sorter.split('.');
+  if (query.sorter) {
+    const s: string[] = query.sorter.split('.');
     dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
@@ -56,36 +48,36 @@ function getAdmin(options: GetParams) {
     });
   }
 
-  if (params.uid) {
+  if (query.uid) {
     dataSource = dataSource.filter((data) =>
-      data.uid.includes(params.uid || '')
+      data.uid.includes(query.uid || '')
     );
   }
 
-  if (params.realname) {
+  if (query.realname) {
     dataSource = dataSource.filter((data) =>
-      data.realname.includes(params.realname || '')
+      data.realname.includes(query.realname || '')
     );
   }
 
-  if (params.username) {
+  if (query.username) {
     dataSource = dataSource.filter((data) =>
-      data.username.includes(params.username || '')
+      data.username.includes(query.username || '')
     );
   }
 
-  if (params.roleId) {
-    dataSource = dataSource.filter((data) => data.roleId === params.roleId);
+  if (query.roleId) {
+    dataSource = dataSource.filter((data) => data.roleId === query.roleId);
   }
 
-  if (params.roleName) {
+  if (query.roleName) {
     dataSource = dataSource.filter((data) =>
-      data.roleName.includes(params.roleName || '')
+      data.roleName.includes(query.roleName || '')
     );
   }
 
-  if (params.status) {
-    dataSource = dataSource.filter((data) => data.status === params.status);
+  if (query.status) {
+    dataSource = dataSource.filter((data) => data.status === query.status);
   }
 
   const result = {
@@ -96,9 +88,7 @@ function getAdmin(options: GetParams) {
   return successResponseWrap(result);
 }
 
-function updateAdmin(options: GetParams) {
-  let { body } = options;
-  body = body ? JSON.parse(body) || {} : {};
+function updateAdmin({ body }: any) {
   const { uid, realname, username, roleId, roleName, status } = (body ||
     {}) as AdminItem;
 
@@ -137,21 +127,29 @@ function updateAdmin(options: GetParams) {
   return successResponseWrap('ok');
 }
 
-function deleteAdmin(options: GetParams) {
-  const { url } = options;
-  const params = qs.parseUrl(url).query as any;
-  if (!params.ids) {
+function deleteAdmin({ query }: any) {
+  if (!query.ids) {
     return successResponseWrap('ok');
   }
-  const ids = params.ids.split(',');
+  const ids = query.ids.split(',');
   admins = admins.filter((item) => ids.indexOf(item.uid) === -1);
   return successResponseWrap('ok');
 }
 
-setupMock({
-  setup() {
-    Mock.mock(new RegExp('/api/admin/list'), getAdmin);
-    Mock.mock(new RegExp('/api/admin/update'), updateAdmin);
-    Mock.mock(new RegExp('/api/admin/delete'), deleteAdmin);
+export default [
+  {
+    url: '/api/admin/list',
+    method: 'get',
+    response: getAdmin,
   },
-});
+  {
+    url: '/api/admin/update',
+    method: 'post',
+    response: updateAdmin,
+  },
+  {
+    url: '/api/admin/delete',
+    method: 'get',
+    response: deleteAdmin,
+  },
+];

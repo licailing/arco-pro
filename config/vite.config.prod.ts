@@ -9,6 +9,7 @@ import configImageminPlugin from './plugin/imagemin';
 export default mergeConfig(
   {
     mode: 'production',
+    base: '', // 打包不是根目录设置
     plugins: [
       configCompressPlugin('gzip'),
       configVisualizerPlugin(),

@@ -1,8 +1,8 @@
 import { Ref } from 'vue';
 import type {
+  ActionType,
   ProTableProps,
   ToolBarData,
-  UseFetchDataAction,
 } from '@arco-vue-pro-components/pro-components';
 
 export interface RenderData {
@@ -41,7 +41,7 @@ export interface ButtonItem {
     type,
   }: {
     record?: any;
-    action?: UseFetchDataAction;
+    action?: ActionType;
     data?: ToolBarData<any>;
     type: 'column' | 'toolbar';
   }) => any;

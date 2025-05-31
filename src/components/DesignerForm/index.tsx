@@ -229,7 +229,7 @@ export default defineComponent({
             const span = item?.options?.isRow
               ? 24
               : (item?.options?.rowCol || 1) * colSpan.value;
-            const rules = [];
+            const rules: any[] = [];
             if (item.options.required) {
               rules.push({
                 required: true,

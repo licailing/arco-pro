@@ -55,7 +55,7 @@
   const { t } = useI18n();
   const blockDataList = computed<BlockList>(() => {
     const { renderData } = props;
-    const result = [];
+    const result: any[] = [];
     result.push({
       title:
         props.type === 'pre'

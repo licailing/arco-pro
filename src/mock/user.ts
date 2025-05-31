@@ -1,20 +1,13 @@
-import Mock from 'mockjs';
-import setupMock, {
-  successResponseWrap,
-  failResponseWrap,
-} from '@/utils/setup-mock';
+import { successResponseWrap, failResponseWrap } from '@/utils/setup-mock';
 
-import { MockParams } from '@/types/mock';
-import { isLogin } from '@/utils/auth';
-
-setupMock({
-  setup() {
-    // Mock.XHR.prototype.withCredentials = true;
-
-    // 用户信息
-    Mock.mock(new RegExp('/api/user/info'), () => {
-      if (isLogin()) {
-        const role = window.localStorage.getItem('userRole') || 'admin';
+export default [
+  {
+    url: '/api/user/info',
+    method: 'post',
+    response: (req: any) => {
+      const { isLogin, userRole } = req.body || {};
+      if (isLogin) {
+        const role = userRole || 'admin';
         return successResponseWrap({
           name: '王立群',
           avatar:
@@ -36,11 +29,20 @@ setupMock({
         });
       }
       return failResponseWrap(null, '未登录', 50008);
-    });
-
-    // 登录
-    Mock.mock(new RegExp('/api/user/login'), (params: MockParams) => {
-      const { username, password } = JSON.parse(params.body);
+    },
+  },
+  {
+    url: '/api/user/logout',
+    method: 'post',
+    response: () => {
+      return successResponseWrap('ok');
+    },
+  },
+  {
+    url: '/api/user/login',
+    method: 'post',
+    response: (req: any) => {
+      const { username, password } = req.body;
       if (!username) {
         return failResponseWrap(null, '用户名不能为空', 50000);
       }
@@ -48,58 +50,18 @@ setupMock({
         return failResponseWrap(null, '密码不能为空', 50000);
       }
       if (username === 'admin' && password === 'admin') {
-        window.localStorage.setItem('userRole', 'admin');
         return successResponseWrap({
+          userRole: 'admin',
           token: '12345',
         });
       }
       if (username === 'user' && password === 'user') {
-        window.localStorage.setItem('userRole', 'user');
         return successResponseWrap({
+          userRole: 'user',
           token: '54321',
         });
       }
       return failResponseWrap(null, '账号或者密码错误', 50000);
-    });
-
-    // 登出
-    Mock.mock(new RegExp('/api/user/logout'), () => {
-      return successResponseWrap(null);
-    });
-
-    // 用户的服务端菜单
-    Mock.mock(new RegExp('/api/user/menu'), () => {
-      const menuList = [
-        {
-          path: '/dashboard',
-          name: 'dashboard',
-          meta: {
-            locale: 'menu.server.dashboard',
-            requiresAuth: true,
-            icon: 'icon-dashboard',
-            order: 1,
-          },
-          children: [
-            {
-              path: 'workplace',
-              name: 'Workplace',
-              meta: {
-                locale: 'menu.server.workplace',
-                requiresAuth: true,
-              },
-            },
-            {
-              path: 'https://arco.design',
-              name: 'arcoWebsite',
-              meta: {
-                locale: 'menu.arcoWebsite',
-                requiresAuth: true,
-              },
-            },
-          ],
-        },
-      ];
-      return successResponseWrap(menuList);
-    });
+    },
   },
-});
+];

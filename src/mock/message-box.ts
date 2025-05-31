@@ -1,5 +1,4 @@
-import Mock from 'mockjs';
-import setupMock, { successResponseWrap } from '@/utils/setup-mock';
+import { successResponseWrap } from '@/utils/setup-mock';
 
 const haveReadIds: number[] = [];
 const getMessageList = () => {
@@ -70,16 +69,21 @@ const getMessageList = () => {
   }));
 };
 
-setupMock({
-  setup: () => {
-    Mock.mock(new RegExp('/api/message/list'), () => {
+export default [
+  {
+    url: '/api/message/list',
+    method: 'post',
+    response: () => {
       return successResponseWrap(getMessageList());
-    });
-
-    Mock.mock(new RegExp('/api/message/read'), (params: { body: string }) => {
-      const { ids } = JSON.parse(params.body);
+    },
+  },
+  {
+    url: '/api/message/read',
+    method: 'post',
+    response: (req: any) => {
+      const { ids } = JSON.parse(req.body);
       haveReadIds.push(...(ids || []));
       return successResponseWrap(true);
-    });
+    },
   },
-});
+];

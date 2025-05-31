@@ -92,8 +92,8 @@ export default defineComponent({
 
     const selectedInfo = computed(() => {
       let text;
-      const selectedRowKeys = [];
-      const selected = [];
+      const selectedRowKeys: any[] = [];
+      const selected: any[] = [];
       if (computedValue.value) {
         if (multiple.value) {
           const labelArr = computedValue.value.map((item: any) => {

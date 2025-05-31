@@ -1,9 +1,5 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Mock from 'mockjs';
-import qs from 'query-string';
-import setupMock, { successResponseWrap } from '@/utils/setup-mock';
-import { GetParams } from '@/types/global';
-import { getObject } from '@/utils/storage';
+import { successResponseWrap } from '@/utils/setup-mock';
 
 const designerData = {
   list: [
@@ -165,27 +161,25 @@ const users = Mock.mock({
     },
   ],
 });
-function getDesigner() {
-  const data = getObject('designer-data') || designerData;
+function getDefaultDesigner() {
+  const data = designerData;
   return successResponseWrap(data);
 }
-function getUserLiser(options: GetParams) {
-  const { url } = options;
-  const params = qs.parseUrl(url).query as any;
-  const p = (params.current as number) || 1;
-  const ps = (params.pageSize as number) || 20;
+function getUserLiser({ query }: any) {
+  const p = (query.current as number) || 1;
+  const ps = (query.pageSize as number) || 20;
 
   let dataSource: any[] = users.list;
 
-  if (params.name) {
+  if (query.name) {
     dataSource = dataSource.filter((data) =>
-      data.name.includes(params.name || '')
+      data.name.includes(query.name || '')
     );
   }
 
-  if (params.age) {
+  if (query.age) {
     dataSource = dataSource.filter((data) =>
-      data.age.includes(params.age || '')
+      data.age.includes(query.age || '')
     );
   }
 
@@ -195,9 +189,15 @@ function getUserLiser(options: GetParams) {
   };
   return successResponseWrap(result);
 }
-setupMock({
-  setup() {
-    Mock.mock(new RegExp('/api/designer/detail'), getDesigner);
-    Mock.mock(new RegExp('/api/designer/user'), getUserLiser);
+export default [
+  {
+    url: '/api/designer/detail',
+    method: 'get',
+    response: getDefaultDesigner,
   },
-});
+  {
+    url: '/api/designer/user',
+    method: 'get',
+    response: getUserLiser,
+  },
+];

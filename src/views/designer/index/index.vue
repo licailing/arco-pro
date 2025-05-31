@@ -124,9 +124,20 @@
     rowCol: 3,
   }) as Ref;
   const initData = async () => {
+    const designerData = getObject('designer-data');
+    let data = [];
+    if (designerData) {
+      data = designerData.list || [];
+      // 设置初始选中
+      if (data.length) {
+        setCurrentField(data[0], false);
+      }
+      formSetting.value = designerData.formSetting;
+      list.value = data;
+      return;
+    }
     try {
       const res: HttpResponse<any> = await axios.get('/api/designer/detail');
-      let data = [];
       if (res.success) {
         data = res.data.list || [];
         // 设置初始选中

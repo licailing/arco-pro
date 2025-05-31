@@ -1,8 +1,5 @@
 import Mock from 'mockjs';
-import qs from 'query-string';
-import setupMock, { successResponseWrap } from '@/utils/setup-mock';
-import { GetParams } from '@/types/global';
-
+import { successResponseWrap } from '@/utils/setup-mock';
 interface RoleItem {
   roleId: string;
   roleName: string;
@@ -33,14 +30,11 @@ function getRoleAll() {
   return successResponseWrap(list);
 }
 
-function getRole(options: GetParams) {
-  const { url } = options;
-  const params = qs.parseUrl(url).query as any;
-
+function getRole({ query }: any) {
   let dataSource = role;
 
-  if (params.sorter) {
-    const s: string[] = params.sorter.split('.');
+  if (query.sorter) {
+    const s: string[] = query.sorter.split('.');
     dataSource = dataSource.sort((prev: any, next: any) => {
       if (s[1] === 'desc') {
         return next[s[0]] - prev[s[0]];
@@ -49,9 +43,9 @@ function getRole(options: GetParams) {
     });
   }
 
-  if (params.roleName) {
+  if (query.roleName) {
     dataSource = dataSource.filter((menuData) =>
-      menuData.roleName.includes(params.roleName || '')
+      menuData.roleName.includes(query.roleName || '')
     );
   }
   const result = {
@@ -62,9 +56,7 @@ function getRole(options: GetParams) {
   return successResponseWrap(result);
 }
 
-function updateRole(options: GetParams) {
-  let { body } = options || {};
-  body = body ? JSON.parse(body) || {} : {};
+function updateRole({ body }: any) {
   const { roleId, roleName, premits } = body || ({} as RoleItem);
 
   if (roleId) {
@@ -85,21 +77,34 @@ function updateRole(options: GetParams) {
   return successResponseWrap('ok');
 }
 
-function deleteRole(options: GetParams) {
-  const { url } = options;
-  const params = qs.parseUrl(url).query as any;
-  if (!params.ids) {
+function deleteRole({ query }: any) {
+  if (!query.ids) {
     return successResponseWrap('ok');
   }
-  const ids = params.ids.split(',');
+  const ids = query.ids.split(',');
   role = role.filter((item) => ids.indexOf(item.roleId) === -1);
   return successResponseWrap('ok');
 }
-setupMock({
-  setup() {
-    Mock.mock(new RegExp('/api/role/list'), getRole);
-    Mock.mock(new RegExp('/api/role/all'), getRoleAll);
-    Mock.mock(new RegExp('/api/role/update'), updateRole);
-    Mock.mock(new RegExp('/api/role/delete'), deleteRole);
+
+export default [
+  {
+    url: '/api/role/list',
+    method: 'get',
+    response: getRole,
   },
-});
+  {
+    url: '/api/role/all',
+    method: 'get',
+    response: getRoleAll,
+  },
+  {
+    url: '/api/role/update',
+    method: 'post',
+    response: updateRole,
+  },
+  {
+    url: '/api/role/delete',
+    method: 'get',
+    response: deleteRole,
+  },
+];

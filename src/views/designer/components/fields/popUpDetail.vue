@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-form-item label="关联字段" field="options.associateModel">
-      <auto-list-view
+      <pro-select
         v-model="data.options.associateModel"
         :options="options"
         label-key="name"

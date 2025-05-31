@@ -2,10 +2,27 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import { viteMockServe } from 'vite-plugin-mock';
 import svgLoader from 'vite-svg-loader';
 
 export default defineConfig({
-  plugins: [vue(), vueJsx(), svgLoader({ svgoConfig: {} })],
+  plugins: [
+    vue(),
+    vueJsx(),
+    svgLoader({ svgoConfig: {} }),
+    viteMockServe({
+      mockPath: 'src/mock',
+      localEnabled: true,
+      prodEnabled: true, // 需要生产mock
+      // prodEnabled: false, // 不需要生产mock
+      supportTs: true,
+      ignore: /^_/,
+      injectCode: `
+      import { setupProdMockServer } from '../src/mockProdServer.ts';
+      setupProdMockServer();
+    `,
+    }),
+  ],
   resolve: {
     alias: [
       {

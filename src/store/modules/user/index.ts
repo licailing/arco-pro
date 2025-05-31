@@ -5,7 +5,7 @@ import {
   getUserInfo,
   LoginData,
 } from '@/api/user';
-import { setToken, clearToken } from '@/utils/auth';
+import { setToken, clearToken, isLogin } from '@/utils/auth';
 import { removeRouteListener } from '@/utils/route-listener';
 import { UserState } from './types';
 import useAppStore from '../app';
@@ -55,7 +55,10 @@ const useUserStore = defineStore('user', {
 
     // Get user's information
     async info() {
-      const res = await getUserInfo();
+      const res = await getUserInfo({
+        isLogin: isLogin(),
+        userRole: localStorage.getItem('userRole'),
+      });
 
       this.setInfo(res.data);
     },
@@ -64,6 +67,7 @@ const useUserStore = defineStore('user', {
     async login(loginForm: LoginData) {
       try {
         const res = await userLogin(loginForm);
+        localStorage.setItem('userRole', res.data.userRole);
         setToken(res.data.token);
       } catch (err) {
         clearToken();
