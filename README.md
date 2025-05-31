@@ -1,13 +1,13 @@
 # 基于arco-design组件库vue3 ProTable、TableList组件
 ## 组件都是用 TypeScript 编写的、通过eslint、mock数据模拟真实操作
 git链接: [https://github.com/licailing/arco-pro](https://github.com/licailing/arco-pro)
-预览地址: [http://47.120.3.125:3000/](http://47.120.3.125:3000/)
+预览地址: [https://licailing.github.io/arco-pro/](https://licailing.github.io/arco-pro/)
 
 # 运行
 
 ```bash
 npm install
-npm run dev
+npm run serve
 ```
 ### TableList是基于ProTable高度封装的组件
 #### 高级筛选-收起

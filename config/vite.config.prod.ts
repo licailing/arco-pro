@@ -1,4 +1,4 @@
-import { mergeConfig } from 'vite';
+import { mergeConfig, loadEnv } from 'vite';
 import baseConfig from './vite.config.base';
 import configCompressPlugin from './plugin/compress';
 import configVisualizerPlugin from './plugin/visualizer';
@@ -6,10 +6,11 @@ import configArcoResolverPlugin from './plugin/arcoResolver';
 import configStyleImportPlugin from './plugin/styleImport';
 import configImageminPlugin from './plugin/imagemin';
 
+const env = loadEnv('production', process.cwd());
 export default mergeConfig(
   {
     mode: 'production',
-    base: '', // 打包不是根目录设置
+    base: env.VITE_BASE_PATH || '/',
     plugins: [
       configCompressPlugin('gzip'),
       configVisualizerPlugin(),
