@@ -9,6 +9,8 @@ interface AdminItem {
   status: string;
   password: string;
   repassword: string;
+  headImg: string;
+  images: any[];
 }
 
 let i = 3;
@@ -22,6 +24,8 @@ let admins: AdminItem[] = [
     password: '',
     repassword: '',
     status: '1',
+    headImg: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
+    images: [],
   },
   {
     uid: '1',
@@ -32,6 +36,8 @@ let admins: AdminItem[] = [
     password: '',
     repassword: '',
     status: '2',
+    headImg: 'https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png',
+    images: [],
   },
 ];
 
@@ -89,7 +95,7 @@ function getAdmin({ query }: any) {
 }
 
 function updateAdmin({ body }: any) {
-  const { uid, realname, username, roleId, roleName, status } = (body ||
+  const { uid, realname, username, roleId, roleName, status, headImg, images } = (body ||
     {}) as AdminItem;
 
   if (uid) {
@@ -106,6 +112,8 @@ function updateAdmin({ body }: any) {
           roleId,
           roleName,
           status,
+          headImg,
+          images
         };
       }
       return item;
@@ -121,6 +129,8 @@ function updateAdmin({ body }: any) {
       roleId,
       roleName,
       status,
+      headImg,
+      images
     });
     i += 1;
   }
@@ -134,6 +144,12 @@ function deleteAdmin({ query }: any) {
   const ids = query.ids.split(',');
   admins = admins.filter((item) => ids.indexOf(item.uid) === -1);
   return successResponseWrap('ok');
+}
+
+function uploadImg() {
+  return successResponseWrap({
+    url: 'https://n.sinaimg.cn/mail/sysmail/mailskins/144966/5_retina.png'
+  });
 }
 
 export default [
@@ -151,5 +167,10 @@ export default [
     url: '/api/admin/delete',
     method: 'get',
     response: deleteAdmin,
+  },
+  {
+    url: '/api/file/uploadImg',
+    method: 'post',
+    response: uploadImg,
   },
 ];

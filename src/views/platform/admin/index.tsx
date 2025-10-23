@@ -3,6 +3,7 @@ import axios from 'axios';
 import type { ModalFormData } from '@/components/TableList/interface';
 import TableList from '@/components/TableList';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
+import UploadFile from '@/components/UploadFile/index';
 
 export default defineComponent({
   name: 'Admin',
@@ -48,6 +49,62 @@ export default defineComponent({
             },
           ],
         },
+      },
+      {
+        title: '头像',
+        dataIndex: 'headImg',
+        valueType: 'image',
+        hideInForm: true,
+        hideInSearch: true,
+      },
+      {
+        title: '头像',
+        dataIndex: 'headImg',
+        renderFormItem: () => {
+          return (
+            <UploadFile
+              imagePreview
+              multiple={false}
+              listType="picture-card"
+              limit={1}
+            />
+          );
+        },
+        formItemProps: {
+          rules: [
+            {
+              required: true,
+              message: '头像不能为空',
+            },
+          ],
+        },
+        hideInTable: true,
+        hideInSearch: true,
+      },
+      {
+        title: '图片',
+        dataIndex: 'images',
+        renderFormItem: () => {
+          return (
+            <UploadFile
+              accept="image/*"
+              imagePreview
+              listType="picture-card"
+              multiple={true}
+              limit={5}
+            />
+          );
+        },
+        formItemProps: {
+          rules: [
+            {
+              required: true,
+              message: '图片不能为空',
+            },
+          ],
+        },
+        hideInTable: true,
+        hideInSearch: true,
       },
       {
         title: '角色',
