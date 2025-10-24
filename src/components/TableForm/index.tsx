@@ -7,11 +7,12 @@ import {
   Ref,
   toRefs,
 } from 'vue';
-import { useFormItem, Modal } from '@arco-design/web-vue';
+import { useFormItem, Modal, ModalConfig } from '@arco-design/web-vue';
 import { ProTable } from '@arco-vue-pro-components/pro-components';
 import { setFields } from '@arco-vue-pro-components/pro-components/es/pro-table/utils';
 import type {
   ActionType,
+  SearchConfig,
   ToolBarData,
 } from '@arco-vue-pro-components/pro-components';
 import { ButtonItem, ButtonData, ModalFormData } from './interface';
@@ -181,6 +182,15 @@ export default defineComponent({
       type: Number,
       default: 140,
     },
+    modalWidth: {
+      type: [Number, String],
+    },
+    modalProps: {
+      type: Object as PropType<ModalConfig>,
+    },
+    modalFormProps: {
+      type: Object as PropType<SearchConfig[]>,
+    },
   },
   emits: {
     'update:modelValue': (value: any) => true,
@@ -280,6 +290,22 @@ export default defineComponent({
     };
     const handleCancel = () => {
       visible.value = false;
+    };
+
+    const validateForm = async () => {
+      if (!formRef.value) {
+        return false;
+      }
+      // 触发表单校验
+      const error = await formRef.value.validate();
+      if (error) {
+        return false;
+      }
+      return true;
+    };
+
+    const handleFormSubmit = () => {
+      formRef.value.submit();
     };
 
     const handleItemUpdate = ({
@@ -444,7 +470,12 @@ export default defineComponent({
           v-model:visible={visible.value}
           draggable
           maskClosable={false}
-          footer={false}
+          cancelText="取消"
+          okText="提交"
+          width={props.modalWidth}
+          onBeforeOk={validateForm}
+          onOk={handleFormSubmit}
+          onCancel={handleCancel}
         >
           <ProTable
             formRef={formRefFun}
@@ -453,6 +484,7 @@ export default defineComponent({
             columns={props.columns}
             type="form"
             v-slots={slots}
+            search={{ optionRender: false, ...props.modalFormProps }}
           />
         </a-modal>
       );

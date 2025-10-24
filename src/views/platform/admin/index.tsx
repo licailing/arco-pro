@@ -95,14 +95,6 @@ export default defineComponent({
             />
           );
         },
-        formItemProps: {
-          rules: [
-            {
-              required: true,
-              message: '图片不能为空',
-            },
-          ],
-        },
         hideInTable: true,
         hideInSearch: true,
       },
@@ -116,6 +108,23 @@ export default defineComponent({
           labelKey: 'roleName',
           placeholder: '请选择角色',
         },
+        hideInForm: true,
+      },
+      {
+        title: '角色',
+        dataIndex: 'roleId',
+        valueType: 'select',
+        girdItemProps: {
+          span: 2,
+        },
+        fieldProps: {
+          request: fetchRole,
+          valueKey: 'roleId',
+          labelKey: 'roleName',
+          placeholder: '请选择角色',
+        },
+        hideInSearch: true,
+        hideInTable: true,
       },
       {
         title: '状态',
@@ -311,6 +320,18 @@ export default defineComponent({
                 buttons={buttons}
                 defaultFormData={{ status: 1 }}
                 rowSelection={{ type: 'radio' }}
+                modalWidth="70%"
+                modalFormProps={{
+                  formProps: {
+                    layout: 'horizontal',
+                    autoLabelWidth: true,
+                  },
+                  gridProps: {
+                    cols: 2,
+                    rowGap: 20,
+                    colGap: 20,
+                  },
+                }}
               ></TableList>
             </a-card>
             <a-card

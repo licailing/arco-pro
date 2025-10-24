@@ -46,8 +46,10 @@ export default defineComponent({
         }
       }
       if (!props.multiple) {
-        emit('update:modelValue', fileItem.url);
-        emit('change', fileItem.url);
+        const url = fileList.length ? fileItem.url : '';
+        // 删除
+        emit('update:modelValue', url);
+        emit('change', url);
       } else {
         emit('update:modelValue', fileList);
         emit('change', fileList);

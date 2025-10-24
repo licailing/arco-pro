@@ -10,11 +10,13 @@ import {
 import qs from 'query-string';
 import axios from 'axios';
 import { TableData } from '@arco-design/web-vue';
+import type { ModalConfig } from '@arco-design/web-vue';
 import { HttpResponse } from '@/api/interceptor';
 import { ProTable } from '@arco-vue-pro-components/pro-components';
 import { setFields } from '@arco-vue-pro-components/pro-components/es/pro-table/utils';
 import type {
   ActionType,
+  SearchConfig,
   ToolBarData,
 } from '@arco-vue-pro-components/pro-components';
 import { ButtonItem, ButtonData, ModalFormData } from './interface';
@@ -164,6 +166,15 @@ export default defineComponent({
       type: Number,
       default: 200,
     },
+    modalWidth: {
+      type: [Number, String],
+    },
+    modalProps: {
+      type: Object as PropType<ModalConfig>,
+    },
+    modalFormProps: {
+      type: Object as PropType<SearchConfig[]>,
+    },
   },
   setup(props, { attrs, slots }) {
     const columns = toRef(props, 'columns');
@@ -224,6 +235,23 @@ export default defineComponent({
         visible.value = false;
       }
     };
+
+    const validateForm = async () => {
+      if (!modalFormRef.value) {
+        return false;
+      }
+      // 触发表单校验
+      const error = await modalFormRef.value.validate();
+      if (error) {
+        return false;
+      }
+      return true;
+    };
+
+    const handleFormSubmit = () => {
+      modalFormRef.value.submit();
+    };
+
     const handleItemUpdate = ({
       add,
       record,
@@ -277,7 +305,11 @@ export default defineComponent({
             onClick={(e: Event) => {
               e.stopPropagation();
               e.preventDefault();
-              button.handleClick({ data, action: data.action, type: 'toolbar' });
+              button.handleClick({
+                data,
+                action: data.action,
+                type: 'toolbar',
+              });
             }}
           >
             {name}
@@ -429,7 +461,13 @@ export default defineComponent({
           v-model:visible={visible.value}
           draggable
           maskClosable={false}
-          footer={false}
+          cancelText="取消"
+          okText="提交"
+          width={props.modalWidth}
+          onBeforeOk={validateForm}
+          onOk={handleFormSubmit}
+          onCancel={handleCancel}
+          {...props.modalProps}
         >
           <ProTable
             formRef={setModalFormRef}
@@ -437,6 +475,7 @@ export default defineComponent({
             columns={props.columns}
             type="form"
             v-slots={slots}
+            search={{ optionRender: false, ...props.modalFormProps }}
           />
         </a-modal>
       );
