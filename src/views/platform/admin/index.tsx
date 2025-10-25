@@ -1,6 +1,10 @@
 import { defineComponent, ref } from 'vue';
 import axios from 'axios';
 import type { ModalFormData } from '@/components/TableList/interface';
+import type {
+  FormItemPropsData,
+  FormPropsData,
+} from '@arco-vue-pro-components/pro-components';
 import TableList from '@/components/TableList';
 import Breadcrumb from '@/components/breadcrumb/index.vue';
 import UploadFile from '@/components/UploadFile/index';
@@ -40,13 +44,16 @@ export default defineComponent({
       {
         title: '真实姓名',
         dataIndex: 'realname',
-        formItemProps: {
-          rules: [
-            {
-              required: true,
-              message: '请输入真实姓名',
-            },
-          ],
+        formItemProps: ({ formModel }: FormItemPropsData) => {
+          return {
+            disabled: !!formModel.value.uid, // 不能编辑
+            rules: [
+              {
+                required: true,
+                message: '请输入真实姓名',
+              },
+            ],
+          };
         },
       },
       {
@@ -322,9 +329,19 @@ export default defineComponent({
                 rowSelection={{ type: 'radio' }}
                 modalWidth="70%"
                 modalFormProps={{
-                  formProps: {
-                    layout: 'horizontal',
-                    autoLabelWidth: true,
+                  formProps: ({ formModel }: FormPropsData) => {
+                    return {
+                      layout: 'horizontal',
+                      autoLabelWidth: true,
+                      rules: {
+                        roleId: [
+                          {
+                            required: !!formModel.value.uid,
+                            message: '请输入用户名',
+                          },
+                        ],
+                      },
+                    };
                   },
                   gridProps: {
                     cols: 2,
