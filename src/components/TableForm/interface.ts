@@ -13,6 +13,7 @@ export interface RenderData {
 export interface ModalFormData {
   isAdd: boolean;
   rowData: any;
+  formModel: Ref;
   visible: Ref;
   onCancel: () => void;
   onSubmit: (values: any) => void;

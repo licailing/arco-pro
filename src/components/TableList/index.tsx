@@ -13,7 +13,6 @@ import { TableData } from '@arco-design/web-vue';
 import type { ModalConfig } from '@arco-design/web-vue';
 import { HttpResponse } from '@/api/interceptor';
 import { ProTable } from '@arco-vue-pro-components/pro-components';
-import { setFields } from '@arco-vue-pro-components/pro-components/es/pro-table/utils';
 import type {
   ActionType,
   SearchConfig,
@@ -266,18 +265,6 @@ export default defineComponent({
       if (props.beforeSave) {
         newRecord = props.beforeSave(newRecord);
       }
-      if (modalFormRef.value) {
-        // 清除校验状态
-        modalFormRef.value.clearValidate();
-        // 重置或设置表单值
-        add
-          ? modalFormRef.value.resetFields()
-          : setFields(newRecord, modalFormRef.value);
-        // 新增下级情况
-        if (add && Object.keys(newRecord).length) {
-          setFields(newRecord, modalFormRef.value);
-        }
-      }
       updatePath.value = path;
       rowData.value = newRecord;
       visible.value = true;
@@ -447,6 +434,7 @@ export default defineComponent({
         const data: ModalFormData = {
           isAdd: isAdd.value,
           rowData: rowData.value,
+          formModel: rowData,
           visible,
           onCancel: handleCancel,
           onSubmit: handleSubmit,
@@ -460,6 +448,7 @@ export default defineComponent({
           title={isAdd.value ? '新增' : '编辑'}
           v-model:visible={visible.value}
           draggable
+          unmountOnClose
           maskClosable={false}
           cancelText="取消"
           okText="提交"
@@ -475,6 +464,7 @@ export default defineComponent({
             columns={props.columns}
             type="form"
             v-slots={slots}
+            defaultFormData={rowData.value}
             search={{ optionRender: false, ...props.modalFormProps }}
           />
         </a-modal>

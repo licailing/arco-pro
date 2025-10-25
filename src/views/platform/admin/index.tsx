@@ -8,7 +8,6 @@ import UploadFile from '@/components/UploadFile/index';
 export default defineComponent({
   name: 'Admin',
   setup(props) {
-    const formModel = ref<any>({});
     const fetchRole = async (value) => {
       console.log('fetchRole', value);
       const res = await axios.get(`/api/role/all`);
@@ -156,7 +155,7 @@ export default defineComponent({
       },
     ];
     const renderModalForm = (data: ModalFormData) => {
-      const { isAdd, visible, formRef } = data;
+      const { isAdd, visible, formRef, formModel } = data;
       return (
         <a-modal
           titleAlign="start"
@@ -164,6 +163,7 @@ export default defineComponent({
           v-model:visible={visible.value}
           draggable
           maskClosable={false}
+          unmountOnClose
           footer={false}
         >
           <a-form
@@ -259,7 +259,7 @@ export default defineComponent({
             <a-form-item
               label="密码"
               field="password"
-              rules={[{ required: true, message: '请填写密码' }]}
+              rules={[{ required: isAdd, message: '请填写密码' }]}
             >
               <a-input-password
                 maxLength={32}
@@ -270,7 +270,7 @@ export default defineComponent({
               label="重复密码"
               field="repassword"
               rules={[
-                { required: true, message: '请填写重复密码' },
+                { required: isAdd, message: '请填写重复密码' },
                 {
                   validator: (value: any, cb: any) => {
                     return new Promise((resolve: any) => {

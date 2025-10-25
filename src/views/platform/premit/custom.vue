@@ -116,12 +116,13 @@
         </a-table-column>
       </template>
       <!-- 自定义新增/编辑  -->
-      <template #modal-form="{ formRef, isAdd, visible, onCancel, onSubmit }">
+      <template #modal-form="{ formRef, isAdd, visible, onCancel, onSubmit, formModel }">
         <a-modal
           v-model:visible="visible.value"
           title-align="start"
           :title="isAdd ? '新增' : '编辑'"
           draggable
+          unmountOnClose
           :mask-closable="false"
           :footer="false"
         >
@@ -258,7 +259,6 @@
   ];
   const formSearchRef = ref();
   const formSearch = ref<any>({});
-  const formModel = ref<any>({});
   const collapsed = ref(true);
   const tableRef = ref();
 </script>
